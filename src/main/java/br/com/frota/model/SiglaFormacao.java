@@ -13,6 +13,11 @@ public class SiglaFormacao extends GenericModel {
         this.setId(id);
     }
 
+    public SiglaFormacao(String sigla) {
+        super();
+        this.sigla = sigla;
+    }
+
     public String getSigla() {
         return sigla;
     }
@@ -23,6 +28,6 @@ public class SiglaFormacao extends GenericModel {
 
     @Override
     public String toString() {
-        return "Marca [sigla=" + sigla + "]";
+        return "SiglaFormacao [sigla=" + sigla + "]";
     }
 }

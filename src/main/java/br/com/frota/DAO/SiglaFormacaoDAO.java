@@ -1,7 +1,6 @@
 package br.com.frota.DAO;
 
 import br.com.frota.model.SiglaFormacao;
-import br.com.frota.model.SiglaFormacao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -111,9 +110,9 @@ public class SiglaFormacaoDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteSiglaFormacao(int id) throws SQLException {
+    public boolean deleteSiglaFormacao(Long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_SIGLA_FORMACAO_SQL)) {
-            statement.setInt(1, id);
+            statement.setLong(1, id);
 
             return statement.executeUpdate() > 0;
         } catch (ClassNotFoundException e) {

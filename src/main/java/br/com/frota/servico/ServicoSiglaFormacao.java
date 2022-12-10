@@ -13,7 +13,7 @@ public class ServicoSiglaFormacao {
         return siglaFormacaoDAO.insert(entidade);
     }
 
-    public SiglaFormacao buscarPorId(Integer id) {
+    public SiglaFormacao buscarPorId(Long id) {
         return siglaFormacaoDAO.findById(id);
     }
 
@@ -21,7 +21,7 @@ public class ServicoSiglaFormacao {
         siglaFormacaoDAO.updateSiglaFormacao(medico);
     }
 
-    public void remover(Integer id) throws SQLException {
+    public void remover(Long id) throws SQLException {
         siglaFormacaoDAO.deleteSiglaFormacao(id);
     }
 }

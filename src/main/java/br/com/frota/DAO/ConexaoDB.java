@@ -7,7 +7,8 @@ import java.sql.SQLException;
 
 public class ConexaoDB {
     //TODO: criar variáveis de ambiente para os dados de acesso ao banco.
-    private static final String dbName = "professor_frota";
+//    private static final String dbName = "professor_frota";
+    private static final String dbName = "tiagovargas20211045050365";
     private static final String dbURL = "jdbc:postgresql://200.17.32.221:5432/";
     private static final String username = "postgres";
     private static final String password = "postgres";
@@ -27,7 +28,7 @@ public class ConexaoDB {
     public static PreparedStatement prepararSQL(String sql) throws SQLException, ClassNotFoundException {
         return conexaoDB().prepareStatement(sql);
     }
-    
+
     public static PreparedStatement prepararSQL(String sql, int StatementType) throws SQLException, ClassNotFoundException {
         return conexaoDB().prepareStatement(sql, StatementType);
     }
