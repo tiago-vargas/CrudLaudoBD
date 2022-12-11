@@ -89,4 +89,25 @@ public class TestSiglaFormacao {
         // TearDown
         stmt.execute("DELETE FROM sigla_formacao WHERE id = " + id + ";");
     }
+
+    @Test
+    void remover() throws SQLException {
+        // SetUp
+        var servico = new ServicoSiglaFormacao();
+        Connection con = DriverManager.getConnection(MY_DATABASE_URL, "postgres", "postgres");
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery("INSERT INTO sigla_formacao (sigla) VALUES ('Sigla_rem') RETURNING id;");
+        rs.next();
+        long id = rs.getLong("id");
+
+        // Act
+        servico.remover(id);
+
+        // Assert
+        rs = stmt.executeQuery("SELECT * FROM sigla_formacao WHERE id = " + id + ";");
+        Assertions.assertFalse(rs.next());
+
+        // TearDown
+        // ...
+    }
 }
