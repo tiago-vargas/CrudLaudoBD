@@ -11,16 +11,16 @@ import java.util.List;
 public class SiglaFormacaoDAO extends ConexaoDB {
 
     private static final String INSERT_SIGLA_FORMACAO_SQL = "INSERT INTO sigla_formacao (sigla) VALUES (?);";
-    private static final String SELECT_SIGLA_FORMACAO_BY_ID = "SELECT * FROM sigla_formacao WHERE id = ?";
-    private static final String SELECT_ALL_SIGLA_FORMACAO = "SELECT * FROM sigla_formacao;";
+    private static final String SELECT_SIGLA_FORMACAO_BY_ID_SQL = "SELECT * FROM sigla_formacao WHERE id = ?";
+    private static final String SELECT_ALL_SIGLA_FORMACAO_SQL = "SELECT * FROM sigla_formacao;";
     private static final String DELETE_SIGLA_FORMACAO_SQL = "DELETE FROM sigla_formacao WHERE id = ?;";
-    private static final String BUSCAR_POR_SIGLA_SIGLA_FORMACAO_SQL = "DELETE FROM sigla_formacao WHERE sigla = ?;";
+    private static final String BUSCAR_SIGLA_FORMACAO_POR_SIGLA_SQL = "DELETE FROM sigla_formacao WHERE sigla = ?;";
     private static final String UPDATE_SIGLA_FORMACAO_SQL = "UPDATE sigla_formacao SET sigla = ? WHERE id = ?;";
-    private static final String TOTAL = "SELECT count(1) FROM sigla_formacao;";
+    private static final String TOTAL_SQL = "SELECT count(1) FROM sigla_formacao;";
 
     public Integer count() {
         Integer count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL)) {
+        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -58,7 +58,7 @@ public class SiglaFormacaoDAO extends ConexaoDB {
 
     public SiglaFormacao findBySigla(String sigla) {
         SiglaFormacao entidade = null;
-        try (PreparedStatement preparedStatement = prepararSQL(BUSCAR_POR_SIGLA_SIGLA_FORMACAO_SQL)) {
+        try (PreparedStatement preparedStatement = prepararSQL(BUSCAR_SIGLA_FORMACAO_POR_SIGLA_SQL)) {
             preparedStatement.setString(1, sigla);
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -76,7 +76,7 @@ public class SiglaFormacaoDAO extends ConexaoDB {
 
     public SiglaFormacao findById(long id) {
         SiglaFormacao entidade = null;
-        try (PreparedStatement preparedStatement = prepararSQL(SELECT_SIGLA_FORMACAO_BY_ID)) {
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_SIGLA_FORMACAO_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -94,7 +94,7 @@ public class SiglaFormacaoDAO extends ConexaoDB {
 
     public List<SiglaFormacao> selectAllSiglaFormacao() {
         List<SiglaFormacao> entidades = new ArrayList<>();
-        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_SIGLA_FORMACAO)) {
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_SIGLA_FORMACAO_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
