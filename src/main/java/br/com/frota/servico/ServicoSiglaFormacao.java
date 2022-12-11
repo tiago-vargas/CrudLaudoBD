@@ -4,6 +4,7 @@ import br.com.frota.DAO.SiglaFormacaoDAO;
 import br.com.frota.model.SiglaFormacao;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class ServicoSiglaFormacao {
 
@@ -17,8 +18,12 @@ public class ServicoSiglaFormacao {
         return siglaFormacaoDAO.findById(id);
     }
 
-    public void update(SiglaFormacao medico) throws SQLException {
-        siglaFormacaoDAO.updateSiglaFormacao(medico);
+    public List<SiglaFormacao> buscarTodos() {
+        return siglaFormacaoDAO.selectAllSiglaFormacao();
+    }
+
+    public void update(SiglaFormacao siglaFormacao) throws SQLException {
+        siglaFormacaoDAO.updateSiglaFormacao(siglaFormacao);
     }
 
     public void remover(Long id) throws SQLException {

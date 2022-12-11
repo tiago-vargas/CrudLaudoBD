@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.sql.*;
+import java.util.List;
 
 public class TestSiglaFormacao {
     private static final String MY_DATABASE_URL = "jdbc:postgresql://200.17.32.221:5432/tiagovargas20211045050365";
@@ -46,5 +47,25 @@ public class TestSiglaFormacao {
 
         // TearDown
         stmt.execute("DELETE FROM sigla_formacao WHERE id = " + inserted_id + ";");
+    }
+
+    @Test
+    void selectAll() throws SQLException {
+        // SetUp
+        Connection con = DriverManager.getConnection(MY_DATABASE_URL, "postgres", "postgres");
+        Statement stmt = con.createStatement();
+        stmt.execute("INSERT INTO sigla_formacao (sigla) VALUES ('sigla1')");
+        stmt.execute("INSERT INTO sigla_formacao (sigla) VALUES ('sigla2')");
+
+        // Act
+        var servico = new ServicoSiglaFormacao();
+        List<SiglaFormacao> list = servico.buscarTodos();
+
+        Assertions.assertEquals("sigla1", list.get(0).getSigla());
+        Assertions.assertEquals("sigla2", list.get(1).getSigla());
+
+        // TearDown
+        stmt.execute("DELETE FROM sigla_formacao WHERE id = " + list.get(0).getId() + ";");
+        stmt.execute("DELETE FROM sigla_formacao WHERE id = " + list.get(1).getId() + ";");
     }
 }
