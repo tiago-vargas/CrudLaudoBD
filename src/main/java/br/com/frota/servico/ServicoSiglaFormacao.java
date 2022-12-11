@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ServicoSiglaFormacao {
 
-    private SiglaFormacaoDAO siglaFormacaoDAO = new SiglaFormacaoDAO();
+    private final SiglaFormacaoDAO siglaFormacaoDAO = new SiglaFormacaoDAO();
 
     public SiglaFormacao salvar(SiglaFormacao entidade) {
         return siglaFormacaoDAO.insert(entidade);
@@ -28,5 +28,9 @@ public class ServicoSiglaFormacao {
 
     public void remover(Long id) throws SQLException {
         siglaFormacaoDAO.deleteSiglaFormacao(id);
+    }
+
+    public int contar() {
+        return siglaFormacaoDAO.count();
     }
 }

@@ -54,8 +54,8 @@ public class TestSiglaFormacao {
         // SetUp
         Connection con = DriverManager.getConnection(MY_DATABASE_URL, "postgres", "postgres");
         Statement stmt = con.createStatement();
-        stmt.execute("INSERT INTO sigla_formacao (sigla) VALUES ('sigla1')");
-        stmt.execute("INSERT INTO sigla_formacao (sigla) VALUES ('sigla2')");
+        stmt.execute("INSERT INTO sigla_formacao (sigla) VALUES ('sigla1');");
+        stmt.execute("INSERT INTO sigla_formacao (sigla) VALUES ('sigla2');");
 
         // Act
         var servico = new ServicoSiglaFormacao();
@@ -67,5 +67,26 @@ public class TestSiglaFormacao {
         // TearDown
         stmt.execute("DELETE FROM sigla_formacao WHERE id = " + list.get(0).getId() + ";");
         stmt.execute("DELETE FROM sigla_formacao WHERE id = " + list.get(1).getId() + ";");
+    }
+
+    @Test
+    void count() throws SQLException {
+        // SetUp
+        var servico = new ServicoSiglaFormacao();
+        int initialCount = servico.contar();
+        Connection con = DriverManager.getConnection(MY_DATABASE_URL, "postgres", "postgres");
+        Statement stmt = con.createStatement();
+
+        // Act
+        ResultSet rs = stmt.executeQuery("INSERT INTO sigla_formacao (sigla) VALUES ('Sigla_count') RETURNING id;");
+        rs.next();
+        long id = rs.getLong("id");
+        int newCount = servico.contar();
+
+        // Assert
+        Assertions.assertEquals(initialCount + 1, newCount);
+
+        // TearDown
+        stmt.execute("DELETE FROM sigla_formacao WHERE id = " + id + ";");
     }
 }
