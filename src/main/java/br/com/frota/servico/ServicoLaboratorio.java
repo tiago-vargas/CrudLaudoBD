@@ -7,13 +7,13 @@ import java.sql.SQLException;
 
 public class ServicoLaboratorio {
 
-    private LaboratorioDAO laboratorioDAO = new LaboratorioDAO();
+    private final LaboratorioDAO laboratorioDAO = new LaboratorioDAO();
 
     public Laboratorio salvar(Laboratorio entidade) {
         return laboratorioDAO.insert(entidade);
     }
 
-    public Laboratorio buscarPorId(Integer id) {
+    public Laboratorio buscarPorId(long id) {
         return laboratorioDAO.findById(id);
     }
 
@@ -21,7 +21,7 @@ public class ServicoLaboratorio {
         laboratorioDAO.updateLaboratorio(laboratorio);
     }
 
-    public void remover(Integer id) throws SQLException {
+    public void remover(long id) throws SQLException {
         laboratorioDAO.deleteLaboratorio(id);
     }
 }
