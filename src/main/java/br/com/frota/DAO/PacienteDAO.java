@@ -13,15 +13,14 @@ public class PacienteDAO extends ConexaoDB {
 
     private static final String INSERT_PACIENTE_SQL = "INSERT INTO paciente (nome, dt_nascimento) VALUES (?, ?);";
     private static final String SELECT_PACIENTE_BY_ID = "SELECT id, nome, dt_nascimento FROM paciente WHERE id = ?";
-    private static final String SELECT_ALL_PACIENTE = "SELECT * FROM paciente;";
+    private static final String SELECT_ALL_PACIENTE_SQL = "SELECT * FROM paciente;";
     private static final String DELETE_PACIENTE_SQL = "DELETE FROM paciente WHERE id = ?;";
-//    private static final String BUSCAR_POR_NOME_PACIENTE_SQL = "DELETE FROM paciente WHERE nome = ?;";
     private static final String UPDATE_PACIENTE_SQL = "UPDATE paciente SET nome = ?, dt_nascimento = ? WHERE id = ?;";
-    private static final String TOTAL = "SELECT count(1) FROM paciente;";
+    private static final String TOTAL_SQL = "SELECT count(1) FROM paciente;";
 
     public Integer count() {
         Integer count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL)) {
+        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -77,9 +76,9 @@ public class PacienteDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<Paciente> selectAllPacientes() {
+    public List<Paciente> selectAllPaciente() {
         List<Paciente> entidades = new ArrayList<>();
-        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_PACIENTE)) {
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_PACIENTE_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -96,9 +95,9 @@ public class PacienteDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deletePaciente(int id) throws SQLException {
+    public boolean deletePaciente(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_PACIENTE_SQL)) {
-            statement.setInt(1, id);
+            statement.setLong(1, id);
 
             return statement.executeUpdate() > 0;
         } catch (ClassNotFoundException e) {

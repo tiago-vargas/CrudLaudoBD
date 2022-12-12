@@ -37,6 +37,6 @@ public class Paciente extends GenericModel {
 
     @Override
     public String toString() {
-        return "Marca [nome=" + nome + ", dt_nascimento=" + dtNascimento + "]";
+        return "Paciente [nome=" + nome + ", dt_nascimento=" + dtNascimento + "]";
     }
 }
