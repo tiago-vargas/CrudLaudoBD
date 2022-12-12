@@ -10,17 +10,18 @@ import java.util.List;
 
 public class MaterialExameDAO extends ConexaoDB {
 
-    private static final String INSERT_MATERIAL_EXAME_SQL = "INSERT INTO material_exame (material, observacao) VALUES (?, ?);";
-    private static final String SELECT_MATERIAL_EXAME_BY_ID = "SELECT id, material, observacao FROM material_exame WHERE id = ?";
-    private static final String SELECT_ALL_MATERIAL_EXAME = "SELECT * FROM material_exame;";
+    private static final String INSERT_MATERIAL_EXAME_SQL =
+            "INSERT INTO material_exame (material, observacao) VALUES (?, ?);";
+    private static final String SELECT_MATERIAL_EXAME_BY_ID_SQL = "SELECT * FROM material_exame WHERE id = ?";
+    private static final String SELECT_ALL_MATERIAL_EXAME_SQL = "SELECT * FROM material_exame;";
     private static final String DELETE_MATERIAL_EXAME_SQL = "DELETE FROM material_exame WHERE id = ?;";
-    private static final String BUSCAR_POR_MATERIAL_MATERIAL_EXAME_SQL = "DELETE FROM material_exame WHERE material = ?;";
-    private static final String UPDATE_MATERIAL_EXAME_SQL = "UPDATE material_exame SET material = ?, observacao = ? WHERE id = ?;";
-    private static final String TOTAL = "SELECT count(1) FROM material_exame;";
+    private static final String UPDATE_MATERIAL_EXAME_SQL =
+            "UPDATE material_exame SET material = ?, observacao = ? WHERE id = ?;";
+    private static final String TOTAL_SQL = "SELECT count(1) FROM material_exame;";
 
-    public Integer count() {
-        Integer count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL)) {
+    public int count() {
+        int count = 0;
+        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -57,27 +58,9 @@ public class MaterialExameDAO extends ConexaoDB {
         return entidade;
     }
 
-    public MaterialExame findByMaterial(String material) {
-        MaterialExame entidade = null;
-        try (PreparedStatement preparedStatement = prepararSQL(BUSCAR_POR_MATERIAL_MATERIAL_EXAME_SQL)) {
-            preparedStatement.setString(1, material);
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                entidade = new MaterialExame(rs.getLong("id"), rs.getString("material"), rs.getString("observacao"));
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return entidade;
-    }
-
     public MaterialExame findById(long id) {
         MaterialExame entidade = null;
-        try (PreparedStatement preparedStatement = prepararSQL(SELECT_MATERIAL_EXAME_BY_ID)) {
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_MATERIAL_EXAME_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -96,7 +79,7 @@ public class MaterialExameDAO extends ConexaoDB {
 
     public List<MaterialExame> selectAllMaterialExame() {
         List<MaterialExame> entidades = new ArrayList<>();
-        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_MATERIAL_EXAME)) {
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_MATERIAL_EXAME_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -113,9 +96,9 @@ public class MaterialExameDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteMaterialExame(int id) throws SQLException {
+    public boolean deleteMaterialExame(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_MATERIAL_EXAME_SQL)) {
-            statement.setInt(1, id);
+            statement.setLong(1, id);
 
             return statement.executeUpdate() > 0;
         } catch (ClassNotFoundException e) {

@@ -7,21 +7,21 @@ import java.sql.SQLException;
 
 public class ServicoMaterialExame {
 
-    private MaterialExameDAO medicoDAO = new MaterialExameDAO();
+    private final MaterialExameDAO materialExameDAO = new MaterialExameDAO();
 
     public MaterialExame salvar(MaterialExame entidade) {
-        return medicoDAO.insert(entidade);
+        return materialExameDAO.insert(entidade);
     }
 
-    public MaterialExame buscarPorId(Integer id) {
-        return medicoDAO.findById(id);
+    public MaterialExame buscarPorId(long id) {
+        return materialExameDAO.findById(id);
     }
 
     public void update(MaterialExame medico) throws SQLException {
-        medicoDAO.updateMaterialExame(medico);
+        materialExameDAO.updateMaterialExame(medico);
     }
 
-    public void remover(Integer id) throws SQLException {
-        medicoDAO.deleteMaterialExame(id);
+    public void remover(long id) throws SQLException {
+        materialExameDAO.deleteMaterialExame(id);
     }
 }

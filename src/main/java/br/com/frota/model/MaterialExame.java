@@ -11,9 +11,15 @@ public class MaterialExame extends GenericModel {
         this.observacao = observacao;
     }
 
-    public MaterialExame(Long id, String observacao) {
-        this.setId(id);
+    public MaterialExame(String material, String observacao) {
+        super();
+        this.material = material;
         this.observacao = observacao;
+    }
+
+    public MaterialExame(Long id, String material) {
+        this.setId(id);
+        this.material = material;
     }
 
     public String getMaterial() {
@@ -34,6 +40,6 @@ public class MaterialExame extends GenericModel {
 
     @Override
     public String toString() {
-        return "Marca [crm=" + material + ", nome=" + observacao + "]";
+        return "MaterialExame [material=" + material + ", observacao=" + observacao + "]";
     }
 }
