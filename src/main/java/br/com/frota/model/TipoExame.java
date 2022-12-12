@@ -11,6 +11,12 @@ public class TipoExame extends GenericModel {
         this.observacao = observacao;
     }
 
+    public TipoExame(String descricao, String observacao) {
+        super();
+        this.descricao = descricao;
+        this.observacao = observacao;
+    }
+
     public TipoExame(Long id) {
         this.setId(id);
     }
@@ -33,6 +39,6 @@ public class TipoExame extends GenericModel {
 
     @Override
     public String toString() {
-        return "Marca [descricao=" + descricao + ", observacao=" + observacao + "]";
+        return "TipoExame [descricao=" + descricao + ", observacao=" + observacao + "]";
     }
 }

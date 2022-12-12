@@ -1,27 +1,27 @@
 package br.com.frota.servico;
 
-import br.com.frota.DAO.MaterialExameDAO;
-import br.com.frota.model.MaterialExame;
+import br.com.frota.DAO.TipoExameDAO;
+import br.com.frota.model.TipoExame;
 
 import java.sql.SQLException;
 
 public class ServicoTipoExame {
 
-    private MaterialExameDAO medicoDAO = new MaterialExameDAO();
+    private final TipoExameDAO tipoExameDAO = new TipoExameDAO();
 
-    public MaterialExame salvar(MaterialExame entidade) {
-        return medicoDAO.insert(entidade);
+    public TipoExame salvar(TipoExame entidade) {
+        return tipoExameDAO.insert(entidade);
     }
 
-    public MaterialExame buscarPorId(Integer id) {
-        return medicoDAO.findById(id);
+    public TipoExame buscarPorId(long id) {
+        return tipoExameDAO.findById(id);
     }
 
-    public void update(MaterialExame medico) throws SQLException {
-        medicoDAO.updateMaterialExame(medico);
+    public void update(TipoExame medico) throws SQLException {
+        tipoExameDAO.updateTipoExame(medico);
     }
 
-    public void remover(Integer id) throws SQLException {
-        medicoDAO.deleteMaterialExame(id);
+    public void remover(long id) throws SQLException {
+        tipoExameDAO.deleteTipoExame(id);
     }
 }

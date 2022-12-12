@@ -11,16 +11,15 @@ import java.util.List;
 public class TipoExameDAO extends ConexaoDB {
 
     private static final String INSERT_TIPO_EXAME_SQL = "INSERT INTO tipo_exame (descricao, observacao) VALUES (?, ?);";
-    private static final String SELECT_TIPO_EXAME_BY_ID = "SELECT * FROM tipo_exame WHERE id = ?";
-    private static final String SELECT_ALL_TIPO_EXAME = "SELECT * FROM tipo_exame;";
+    private static final String SELECT_TIPO_EXAME_BY_ID_SQL = "SELECT * FROM tipo_exame WHERE id = ?";
+    private static final String SELECT_ALL_TIPO_EXAME_SQL = "SELECT * FROM tipo_exame;";
     private static final String DELETE_TIPO_EXAME_SQL = "DELETE FROM tipo_exame WHERE id = ?;";
-    private static final String BUSCAR_POR_DESCRICAO_TIPO_EXAME_SQL = "DELETE FROM tipo_exame WHERE descricao = ?;";
     private static final String UPDATE_TIPO_EXAME_SQL = "UPDATE tipo_exame SET descricao = ?, observacao = ? WHERE id = ?;";
-    private static final String TOTAL = "SELECT count(1) FROM tipo_exame;";
+    private static final String TOTAL_SQL = "SELECT count(1) FROM tipo_exame;";
 
     public Integer count() {
         Integer count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL)) {
+        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -57,27 +56,9 @@ public class TipoExameDAO extends ConexaoDB {
         return entidade;
     }
 
-    public TipoExame findByDescricao(String descricao) {
-        TipoExame entidade = null;
-        try (PreparedStatement preparedStatement = prepararSQL(BUSCAR_POR_DESCRICAO_TIPO_EXAME_SQL)) {
-            preparedStatement.setString(1, descricao);
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                entidade = new TipoExame(rs.getLong("id"), rs.getString("descricao"), rs.getString("observacao"));
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return entidade;
-    }
-
     public TipoExame findById(long id) {
         TipoExame entidade = null;
-        try (PreparedStatement preparedStatement = prepararSQL(SELECT_TIPO_EXAME_BY_ID)) {
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_TIPO_EXAME_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -96,7 +77,7 @@ public class TipoExameDAO extends ConexaoDB {
 
     public List<TipoExame> selectAllTipoExame() {
         List<TipoExame> entidades = new ArrayList<>();
-        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_TIPO_EXAME)) {
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_TIPO_EXAME_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -113,9 +94,9 @@ public class TipoExameDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteTipoExame(int id) throws SQLException {
+    public boolean deleteTipoExame(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_TIPO_EXAME_SQL)) {
-            statement.setInt(1, id);
+            statement.setLong(1, id);
 
             return statement.executeUpdate() > 0;
         } catch (ClassNotFoundException e) {
