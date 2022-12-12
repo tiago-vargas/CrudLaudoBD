@@ -1,5 +1,6 @@
 package br.com.frota.model;
 
+import br.com.frota.DAO.SiglaFormacaoDAO;
 import br.com.frota.servico.ServicoSiglaFormacao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ public class TestSiglaFormacao {
     @Test
     void salvar() throws SQLException {
         var siglaFormacao = new SiglaFormacao("Sigla_salvar");
-
         var servico = new ServicoSiglaFormacao();
         servico.salvar(siglaFormacao);
 
@@ -21,7 +21,7 @@ public class TestSiglaFormacao {
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM sigla_formacao WHERE id = " + siglaFormacao.getId() + ";");
 
-        Assertions.assertTrue(rs.next());
+        rs.next();
         String sigla = rs.getString("sigla");
         Assertions.assertEquals("Sigla_salvar", sigla);
 
@@ -109,5 +109,39 @@ public class TestSiglaFormacao {
 
         // TearDown
         // ...
+    }
+
+    @Test
+    void update() throws SQLException {
+        // SetUp
+        var servico = new ServicoSiglaFormacao();
+        Connection con = DriverManager.getConnection(MY_DATABASE_URL, "postgres", "postgres");
+        Statement stmt = con.createStatement();
+//        ResultSet rs = stmt.executeQuery("INSERT INTO sigla_formacao (sigla) VALUES ('Sigla_updt') RETURNING id;");
+//        rs.next();
+//        long id = rs.getLong("id");
+//        System.out.println(id);
+
+        // Act
+//        var obj = new SiglaFormacao("");
+//        obj.setId(id);
+//        obj.setSigla("New-sigla");
+        var obj = new SiglaFormacao("Siglao");
+        servico.salvar(obj);
+
+        obj.setSigla("Siglin");
+//        servico.update(obj);
+        var dao = new SiglaFormacaoDAO();
+//        dao.updateSiglaFormacao(obj);
+
+        // Assert
+        long id = obj.getId();
+        ResultSet rs = stmt.executeQuery("SELECT sigla FROM sigla_formacao WHERE id = " + id + ";");
+        rs.next();
+        String sigla = rs.getString("sigla");
+        Assertions.assertEquals("Siglin", sigla);
+
+        // TearDown
+        stmt.execute("DELETE FROM sigla_formacao WHERE id = " + id + ";");
     }
 }
