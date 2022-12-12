@@ -14,13 +14,12 @@ public class MedicoDAO extends ConexaoDB {
     private static final String SELECT_MEDICO_BY_ID = "SELECT id, crm, nome FROM medico WHERE id = ?";
     private static final String SELECT_ALL_MEDICO = "SELECT * FROM medico;";
     private static final String DELETE_MEDICO_SQL = "DELETE FROM medico WHERE id = ?;";
-    private static final String BUSCAR_POR_CRM_MEDICO_SQL = "DELETE FROM medico WHERE crm = ?;";
     private static final String UPDATE_MEDICO_SQL = "UPDATE medico SET crm = ?, nome = ? WHERE id = ?;";
-    private static final String TOTAL = "SELECT count(1) FROM medico;";
+    private static final String TOTAL_SQL = "SELECT count(1) FROM medico;";
 
     public Integer count() {
         Integer count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL)) {
+        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -57,24 +56,6 @@ public class MedicoDAO extends ConexaoDB {
         return entidade;
     }
 
-    public Medico findByCrm(String crm) {
-        Medico entidade = null;
-        try (PreparedStatement preparedStatement = prepararSQL(BUSCAR_POR_CRM_MEDICO_SQL)) {
-            preparedStatement.setString(1, crm);
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                entidade = new Medico(rs.getLong("id"), rs.getString("crm"), rs.getString("nome"));
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return entidade;
-    }
-
     public Medico findById(long id) {
         Medico entidade = null;
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_MEDICO_BY_ID)) {
@@ -94,7 +75,7 @@ public class MedicoDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<Medico> selectAllMedicos() {
+    public List<Medico> selectAllMedico() {
         List<Medico> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_MEDICO)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -113,9 +94,9 @@ public class MedicoDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteMedico(int id) throws SQLException {
+    public boolean deleteMedico(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_MEDICO_SQL)) {
-            statement.setInt(1, id);
+            statement.setLong(1, id);
 
             return statement.executeUpdate() > 0;
         } catch (ClassNotFoundException e) {

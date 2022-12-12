@@ -5,7 +5,7 @@ public class Medico extends GenericModel {
     private String crm;
     private String nome;
 
-    public Medico(Long id, String crm, String nome) {
+    public Medico(long id, String crm, String nome) {
         this.setId(id);
         this.crm = crm;
         this.nome = nome;
@@ -35,6 +35,6 @@ public class Medico extends GenericModel {
 
     @Override
     public String toString() {
-        return "Marca [crm=" + crm + ", nome=" + nome + "]";
+        return "Medico [crm=" + crm + ", nome=" + nome + "]";
     }
 }
