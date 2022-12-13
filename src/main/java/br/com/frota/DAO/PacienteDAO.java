@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
 
-public class PacienteDAO extends ConexaoDB {
+public class PacienteDAO extends GenericDAO {
 
     private static final String INSERT_PACIENTE_SQL = "INSERT INTO paciente (nome, dt_nascimento) VALUES (?, ?);";
     private static final String SELECT_PACIENTE_BY_ID = "SELECT id, nome, dt_nascimento FROM paciente WHERE id = ?";
@@ -19,20 +19,7 @@ public class PacienteDAO extends ConexaoDB {
     private static final String TOTAL_SQL = "SELECT count(1) FROM paciente;";
 
     public int count() {
-        int count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+        return super.count(TOTAL_SQL);
     }
 
     public Paciente insert(Paciente entidade) {
@@ -96,13 +83,7 @@ public class PacienteDAO extends ConexaoDB {
     }
 
     public boolean delete(long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_PACIENTE_SQL)) {
-            statement.setLong(1, id);
-
-            return statement.executeUpdate() > 0;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return super.delete(DELETE_PACIENTE_SQL, id);
     }
 
     public void update(Paciente entidade) throws SQLException {

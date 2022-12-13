@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SiglaFormacaoDAO extends ConexaoDB {
+public class SiglaFormacaoDAO extends GenericDAO {
 
     private static final String INSERT_SIGLA_FORMACAO_SQL = "INSERT INTO sigla_formacao (sigla) VALUES (?);";
     private static final String SELECT_SIGLA_FORMACAO_BY_ID_SQL = "SELECT * FROM sigla_formacao WHERE id = ?";
@@ -18,20 +18,7 @@ public class SiglaFormacaoDAO extends ConexaoDB {
     private static final String TOTAL_SQL = "SELECT count(1) FROM sigla_formacao;";
 
     public int count() {
-        int count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+        return super.count(TOTAL_SQL);
     }
 
     public SiglaFormacao insert(SiglaFormacao entidade) {
@@ -92,13 +79,7 @@ public class SiglaFormacaoDAO extends ConexaoDB {
     }
 
     public boolean delete(Long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_SIGLA_FORMACAO_SQL)) {
-            statement.setLong(1, id);
-
-            return statement.executeUpdate() > 0;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return super.delete(DELETE_SIGLA_FORMACAO_SQL, id);
     }
 
     public void update(SiglaFormacao entidade) throws SQLException {

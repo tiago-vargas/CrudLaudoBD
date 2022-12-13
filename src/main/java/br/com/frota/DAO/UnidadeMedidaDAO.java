@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnidadeMedidaDAO extends ConexaoDB {
+public class UnidadeMedidaDAO extends GenericDAO {
 
     private static final String INSERT_UNIDADE_MEDIDA_SQL = "INSERT INTO unidade_medida (descricao) VALUES (?);";
     private static final String SELECT_UNIDADE_MEDIDA_BY_ID_SQL = "SELECT * FROM unidade_medida WHERE id = ?";
@@ -18,20 +18,7 @@ public class UnidadeMedidaDAO extends ConexaoDB {
     private static final String TOTAL_SQL = "SELECT count(1) FROM unidade_medida;";
 
     public int count() {
-        int count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+        return super.count(TOTAL_SQL);
     }
 
     public UnidadeMedida insert(UnidadeMedida entidade) {
@@ -92,13 +79,7 @@ public class UnidadeMedidaDAO extends ConexaoDB {
     }
 
     public boolean delete(long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_UNIDADE_MEDIDA_SQL)) {
-            statement.setLong(1, id);
-
-            return statement.executeUpdate() > 0;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return super.delete(DELETE_UNIDADE_MEDIDA_SQL, id);
     }
 
     public void update(UnidadeMedida entidade) throws SQLException {

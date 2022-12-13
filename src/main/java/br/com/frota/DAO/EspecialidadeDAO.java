@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EspecialidadeDAO extends ConexaoDB {
+public class EspecialidadeDAO extends GenericDAO {
 
     private static final String INSERT_ESPECIALIDADE_SQL =
             "INSERT INTO especialidade (descricao, observacao) VALUES (?, ?);";
@@ -20,20 +20,7 @@ public class EspecialidadeDAO extends ConexaoDB {
     private static final String TOTAL_SQL = "SELECT count(1) FROM especialidade;";
 
     public int count() {
-        int count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+        return super.count(TOTAL_SQL);
     }
 
     public Especialidade insert(Especialidade entidade) {
@@ -97,13 +84,7 @@ public class EspecialidadeDAO extends ConexaoDB {
     }
 
     public boolean delete(long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_ESPECIALIDADE_SQL)) {
-            statement.setLong(1, id);
-
-            return statement.executeUpdate() > 0;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return super.delete(DELETE_ESPECIALIDADE_SQL, id);
     }
 
     public void update(Especialidade entidade) throws SQLException {

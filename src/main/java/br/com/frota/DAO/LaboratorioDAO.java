@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LaboratorioDAO extends ConexaoDB {
+public class LaboratorioDAO extends GenericDAO {
 
     private static final String INSERT_LABORATORIO_SQL =
             "INSERT INTO laboratorio (descricao, cnes, cnpj, crbm, nome_fantasia) VALUES (?, ?, ?, ?, ?);";
@@ -21,20 +21,7 @@ public class LaboratorioDAO extends ConexaoDB {
 
 
     public int count() {
-        int count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+        return super.count(TOTAL_SQL);
     }
 
     public Laboratorio insert(Laboratorio entidade) {
@@ -107,13 +94,7 @@ public class LaboratorioDAO extends ConexaoDB {
     }
 
     public boolean delete(long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_LABORATORIO_SQL)) {
-            statement.setLong(1, id);
-
-            return statement.executeUpdate() > 0;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return super.delete(DELETE_LABORATORIO_SQL, id);
     }
 
     public void update(Laboratorio entidade) throws SQLException {

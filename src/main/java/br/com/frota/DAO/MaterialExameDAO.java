@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MaterialExameDAO extends ConexaoDB {
+public class MaterialExameDAO extends GenericDAO {
 
     private static final String INSERT_MATERIAL_EXAME_SQL =
             "INSERT INTO material_exame (material, observacao) VALUES (?, ?);";
@@ -20,20 +20,7 @@ public class MaterialExameDAO extends ConexaoDB {
     private static final String TOTAL_SQL = "SELECT count(1) FROM material_exame;";
 
     public int count() {
-        int count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+        return super.count(TOTAL_SQL);
     }
 
     public MaterialExame insert(MaterialExame entidade) {
@@ -97,13 +84,7 @@ public class MaterialExameDAO extends ConexaoDB {
     }
 
     public boolean delete(long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_MATERIAL_EXAME_SQL)) {
-            statement.setLong(1, id);
-
-            return statement.executeUpdate() > 0;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return super.delete(DELETE_MATERIAL_EXAME_SQL, id);
     }
 
     public void update(MaterialExame entidade) throws SQLException {

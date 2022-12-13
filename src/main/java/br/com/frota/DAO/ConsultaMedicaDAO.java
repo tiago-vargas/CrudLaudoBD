@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConsultaMedicaDAO extends ConexaoDB {
+public class ConsultaMedicaDAO extends GenericDAO {
 
     private static final String INSERT_CONSULTA_MEDICA_SQL =
             "INSERT INTO consulta_medica (dt_consulta, medico_id, paciente_id, nm_atendimento)"
@@ -24,24 +24,11 @@ public class ConsultaMedicaDAO extends ConexaoDB {
             "UPDATE consulta_medica "
                     + "SET dt_consulta = ?, medico_id = ?, paciente_id = ?, nm_atendimento = ? "
                     + "WHERE id = ?;";
-    private static final String TOTAL =
+    private static final String TOTAL_SQL =
             "SELECT count(1) FROM consulta_medica;";
 
     public int count() {
-        int count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+        return super.count(TOTAL_SQL);
     }
 
     public ConsultaMedica insert(ConsultaMedica entidade) {
@@ -79,6 +66,7 @@ public class ConsultaMedicaDAO extends ConexaoDB {
                 long medicoId = rs.getLong("medico_id");
                 long pacienteId = rs.getLong("paciente_id");
                 String nmAtendimento = rs.getString("nm_atendimento");
+
                 entidade = new ConsultaMedica(id, dtConsulta, medicoId, pacienteId, nmAtendimento);
             }
         } catch (SQLException e) {
@@ -101,6 +89,7 @@ public class ConsultaMedicaDAO extends ConexaoDB {
                 long medicoId = rs.getLong("medico_id");
                 long pacienteId = rs.getLong("paciente_id");
                 String nmAtendimento = rs.getString("nm_atendimento");
+
                 entidades.add(new ConsultaMedica(id, dtConsulta, medicoId, pacienteId, nmAtendimento));
             }
         } catch (SQLException e) {
@@ -113,13 +102,7 @@ public class ConsultaMedicaDAO extends ConexaoDB {
     }
 
     public boolean delete(long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_CONSULTA_MEDICA_SQL)) {
-            statement.setLong(1, id);
-
-            return statement.executeUpdate() > 0;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return super.delete(DELETE_CONSULTA_MEDICA_SQL, id);
     }
 
     public void update(ConsultaMedica entidade) throws SQLException {
@@ -131,7 +114,6 @@ public class ConsultaMedicaDAO extends ConexaoDB {
             statement.setLong(5, entidade.getId());
 
             statement.executeUpdate();
-
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
