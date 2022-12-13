@@ -50,17 +50,17 @@ public class TesteConsultaMedica {
         consultaMedica.setMedicoId(medico2.getId());
         consultaMedica.setPacienteId(paciente2.getId());
         consultaMedica.setNmAtendimento("No. do atendimento 2");
-        consultaMedicaDAO.updateConsultaMedica(consultaMedica);
+        consultaMedicaDAO.update(consultaMedica);
         consultaMedica = consultaMedicaDAO.findById(id);
         System.out.println(consultaMedica);
 
         //Select all
-        List<ConsultaMedica> consultaMedicas = consultaMedicaDAO.selectAllConsultaMedica();
+        List<ConsultaMedica> consultaMedicas = consultaMedicaDAO.selectAll();
         consultaMedicas.forEach(System.out::println);
 
         //Delete
-        consultaMedicaDAO.deleteConsultaMedica(id);
-        consultaMedicaDAO.selectAllConsultaMedica().forEach(System.out::println);
+        consultaMedicaDAO.delete(id);
+        consultaMedicaDAO.selectAll().forEach(System.out::println);
 
         servicoMedico.remover(medico1.getId());
         servicoMedico.remover(medico2.getId());

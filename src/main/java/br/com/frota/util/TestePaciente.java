@@ -30,16 +30,16 @@ public class TestePaciente {
         //Update
         paciente.setNome("Jane Doe");
         paciente.setDtNascimento(new Date(20000));
-        pacienteDAO.updatePaciente(paciente);
+        pacienteDAO.update(paciente);
         paciente = pacienteDAO.findById(id);
         System.out.println(paciente);
 
         //Select all
-        List<Paciente> pacientes = pacienteDAO.selectAllPaciente();
+        List<Paciente> pacientes = pacienteDAO.selectAll();
         pacientes.forEach(System.out::println);
 
         //Delete
-        pacienteDAO.deletePaciente(id);
-        pacienteDAO.selectAllPaciente().forEach(System.out::println);
+        pacienteDAO.delete(id);
+        pacienteDAO.selectAll().forEach(System.out::println);
     }
 }

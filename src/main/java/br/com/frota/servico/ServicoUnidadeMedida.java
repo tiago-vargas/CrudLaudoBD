@@ -18,10 +18,10 @@ public class ServicoUnidadeMedida {
     }
 
     public void update(UnidadeMedida unidadeMedida) throws SQLException {
-        unidadeMedidaDAO.updateUnidadeMedida(unidadeMedida);
+        unidadeMedidaDAO.update(unidadeMedida);
     }
 
     public void remover(long id) throws SQLException {
-        unidadeMedidaDAO.deleteUnidadeMedida(id);
+        unidadeMedidaDAO.delete(id);
     }
 }

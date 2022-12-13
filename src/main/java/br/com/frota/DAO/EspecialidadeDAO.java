@@ -77,7 +77,7 @@ public class EspecialidadeDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<Especialidade> selectAllEspecialidade() {
+    public List<Especialidade> selectAll() {
         List<Especialidade> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_ESPECIALIDADE_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -96,7 +96,7 @@ public class EspecialidadeDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteEspecialidade(long id) throws SQLException {
+    public boolean delete(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_ESPECIALIDADE_SQL)) {
             statement.setLong(1, id);
 
@@ -106,7 +106,7 @@ public class EspecialidadeDAO extends ConexaoDB {
         }
     }
 
-    public void updateEspecialidade(Especialidade entidade) throws SQLException {
+    public void update(Especialidade entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_ESPECIALIDADE_SQL)) {
             statement.setString(1, entidade.getDescricao());
             statement.setString(2, entidade.getObservacao());

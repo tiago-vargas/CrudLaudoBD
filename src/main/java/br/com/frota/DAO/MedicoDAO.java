@@ -76,7 +76,7 @@ public class MedicoDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<Medico> selectAllMedico() {
+    public List<Medico> selectAll() {
         List<Medico> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_MEDICO)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -95,7 +95,7 @@ public class MedicoDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteMedico(long id) throws SQLException {
+    public boolean delete(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_MEDICO_SQL)) {
             statement.setLong(1, id);
 
@@ -105,7 +105,7 @@ public class MedicoDAO extends ConexaoDB {
         }
     }
 
-    public void updateMedico(Medico entidade) throws SQLException {
+    public void update(Medico entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_MEDICO_SQL)) {
             statement.setString(1, entidade.getCrm());
             statement.setString(2, entidade.getNome());

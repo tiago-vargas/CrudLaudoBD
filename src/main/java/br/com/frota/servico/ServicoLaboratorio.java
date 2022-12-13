@@ -18,10 +18,10 @@ public class ServicoLaboratorio {
     }
 
     public void update(Laboratorio laboratorio) throws SQLException {
-        laboratorioDAO.updateLaboratorio(laboratorio);
+        laboratorioDAO.update(laboratorio);
     }
 
     public void remover(long id) throws SQLException {
-        laboratorioDAO.deleteLaboratorio(id);
+        laboratorioDAO.delete(id);
     }
 }

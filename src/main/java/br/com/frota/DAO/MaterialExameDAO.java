@@ -77,7 +77,7 @@ public class MaterialExameDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<MaterialExame> selectAllMaterialExame() {
+    public List<MaterialExame> selectAll() {
         List<MaterialExame> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_MATERIAL_EXAME_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -96,7 +96,7 @@ public class MaterialExameDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteMaterialExame(long id) throws SQLException {
+    public boolean delete(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_MATERIAL_EXAME_SQL)) {
             statement.setLong(1, id);
 
@@ -106,7 +106,7 @@ public class MaterialExameDAO extends ConexaoDB {
         }
     }
 
-    public void updateMaterialExame(MaterialExame entidade) throws SQLException {
+    public void update(MaterialExame entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_MATERIAL_EXAME_SQL)) {
             statement.setString(1, entidade.getMaterial());
             statement.setString(2, entidade.getObservacao());

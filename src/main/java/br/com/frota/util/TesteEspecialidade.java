@@ -29,16 +29,16 @@ public class TesteEspecialidade {
         //Update
         especialidade.setDescricao("Descricao-2");
         especialidade.setObservacao("Observacao-2");
-        especialidadeDAO.updateEspecialidade(especialidade);
+        especialidadeDAO.update(especialidade);
         especialidade = especialidadeDAO.findById(id);
         System.out.println(especialidade);
 
         //Select all
-        List<Especialidade> especialidades = especialidadeDAO.selectAllEspecialidade();
+        List<Especialidade> especialidades = especialidadeDAO.selectAll();
         especialidades.forEach(System.out::println);
 
         //Delete
-        especialidadeDAO.deleteEspecialidade(id);
-        especialidadeDAO.selectAllEspecialidade().forEach(System.out::println);
+        especialidadeDAO.delete(id);
+        especialidadeDAO.selectAll().forEach(System.out::println);
     }
 }

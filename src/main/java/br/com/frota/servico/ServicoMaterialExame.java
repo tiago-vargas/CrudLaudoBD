@@ -18,10 +18,10 @@ public class ServicoMaterialExame {
     }
 
     public void update(MaterialExame medico) throws SQLException {
-        materialExameDAO.updateMaterialExame(medico);
+        materialExameDAO.update(medico);
     }
 
     public void remover(long id) throws SQLException {
-        materialExameDAO.deleteMaterialExame(id);
+        materialExameDAO.delete(id);
     }
 }

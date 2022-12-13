@@ -27,16 +27,16 @@ public class TesteSiglaFormacao {
 
         //Update
         siglaFormacao.setSigla("NOVA.SIGLA");
-        siglaFormacaoDAO.updateSiglaFormacao(siglaFormacao);
+        siglaFormacaoDAO.update(siglaFormacao);
         siglaFormacao = siglaFormacaoDAO.findById(id);
         System.out.println(siglaFormacao);
 
         //Select all
-        List<SiglaFormacao> siglasFormacoes = siglaFormacaoDAO.selectAllSiglaFormacao();
+        List<SiglaFormacao> siglasFormacoes = siglaFormacaoDAO.selectAll();
         siglasFormacoes.forEach(System.out::println);
 
         //Delete
-        siglaFormacaoDAO.deleteSiglaFormacao(id);
-        siglaFormacaoDAO.selectAllSiglaFormacao().forEach(System.out::println);
+        siglaFormacaoDAO.delete(id);
+        siglaFormacaoDAO.selectAll().forEach(System.out::println);
     }
 }

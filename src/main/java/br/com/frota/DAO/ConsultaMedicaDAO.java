@@ -90,7 +90,7 @@ public class ConsultaMedicaDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<ConsultaMedica> selectAllConsultaMedica() {
+    public List<ConsultaMedica> selectAll() {
         List<ConsultaMedica> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_CONSULTA_MEDICA)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -112,7 +112,7 @@ public class ConsultaMedicaDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteConsultaMedica(long id) throws SQLException {
+    public boolean delete(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_CONSULTA_MEDICA_SQL)) {
             statement.setLong(1, id);
 
@@ -122,7 +122,7 @@ public class ConsultaMedicaDAO extends ConexaoDB {
         }
     }
 
-    public void updateConsultaMedica(ConsultaMedica entidade) throws SQLException {
+    public void update(ConsultaMedica entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_CONSULTA_MEDICA_SQL)) {
             statement.setDate(1, entidade.getDtConsulta());
             statement.setLong(2, entidade.getMedicoId());

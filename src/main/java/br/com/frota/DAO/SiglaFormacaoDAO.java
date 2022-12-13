@@ -73,7 +73,7 @@ public class SiglaFormacaoDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<SiglaFormacao> selectAllSiglaFormacao() {
+    public List<SiglaFormacao> selectAll() {
         List<SiglaFormacao> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_SIGLA_FORMACAO_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -91,7 +91,7 @@ public class SiglaFormacaoDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteSiglaFormacao(Long id) throws SQLException {
+    public boolean delete(Long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_SIGLA_FORMACAO_SQL)) {
             statement.setLong(1, id);
 
@@ -101,7 +101,7 @@ public class SiglaFormacaoDAO extends ConexaoDB {
         }
     }
 
-    public void updateSiglaFormacao(SiglaFormacao entidade) throws SQLException {
+    public void update(SiglaFormacao entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_SIGLA_FORMACAO_SQL)) {
             statement.setString(1, entidade.getSigla());
             statement.setLong(2, entidade.getId());

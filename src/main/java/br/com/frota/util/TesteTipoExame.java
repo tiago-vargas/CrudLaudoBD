@@ -29,16 +29,16 @@ public class TesteTipoExame {
         //Update
         tipoExame.setDescricao("Descricao-2");
         tipoExame.setObservacao("Observacao-2");
-        tipoExameDAO.updateTipoExame(tipoExame);
+        tipoExameDAO.update(tipoExame);
         tipoExame = tipoExameDAO.findById(id);
         System.out.println(tipoExame);
 
         //Select all
-        List<TipoExame> tipoExames = tipoExameDAO.selectAllTipoExame();
+        List<TipoExame> tipoExames = tipoExameDAO.selectAll();
         tipoExames.forEach(System.out::println);
 
         //Delete
-        tipoExameDAO.deleteTipoExame(id);
-        tipoExameDAO.selectAllTipoExame().forEach(System.out::println);
+        tipoExameDAO.delete(id);
+        tipoExameDAO.selectAll().forEach(System.out::println);
     }
 }

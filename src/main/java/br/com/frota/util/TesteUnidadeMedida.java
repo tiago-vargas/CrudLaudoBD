@@ -28,16 +28,16 @@ public class TesteUnidadeMedida {
 
         //Update
         unidadeMedida.setDescricao("W");
-        unidadeMedidaDAO.updateUnidadeMedida(unidadeMedida);
+        unidadeMedidaDAO.update(unidadeMedida);
         unidadeMedida = unidadeMedidaDAO.findById(id);
         System.out.println(unidadeMedida);
 
         //Select all
-        List<UnidadeMedida> unidadeMedidas = unidadeMedidaDAO.selectAllUnidadeMedida();
+        List<UnidadeMedida> unidadeMedidas = unidadeMedidaDAO.selectAll();
         unidadeMedidas.forEach(System.out::println);
 
         //Delete
-        unidadeMedidaDAO.deleteUnidadeMedida(id);
-        unidadeMedidaDAO.selectAllUnidadeMedida().forEach(System.out::println);
+        unidadeMedidaDAO.delete(id);
+        unidadeMedidaDAO.selectAll().forEach(System.out::println);
     }
 }

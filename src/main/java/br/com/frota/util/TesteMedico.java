@@ -29,16 +29,16 @@ public class TesteMedico {
         //Update
         medico.setCrm("CRM-2");
         medico.setNome("Jane Doe");
-        medicoDAO.updateMedico(medico);
+        medicoDAO.update(medico);
         medico = medicoDAO.findById(id);
         System.out.println(medico);
 
         //Select all
-        List<Medico> medicos = medicoDAO.selectAllMedico();
+        List<Medico> medicos = medicoDAO.selectAll();
         medicos.forEach(System.out::println);
 
         //Delete
-        medicoDAO.deleteMedico(id);
-        medicoDAO.selectAllMedico().forEach(System.out::println);
+        medicoDAO.delete(id);
+        medicoDAO.selectAll().forEach(System.out::println);
     }
 }

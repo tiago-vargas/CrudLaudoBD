@@ -29,16 +29,16 @@ public class TesteMaterialExame {
         //Update
         materialExame.setMaterial("Material-2");
         materialExame.setObservacao("Observacao-2");
-        materialExameDAO.updateMaterialExame(materialExame);
+        materialExameDAO.update(materialExame);
         materialExame = materialExameDAO.findById(id);
         System.out.println(materialExame);
 
         //Select all
-        List<MaterialExame> materialExames = materialExameDAO.selectAllMaterialExame();
+        List<MaterialExame> materialExames = materialExameDAO.selectAll();
         materialExames.forEach(System.out::println);
 
         //Delete
-        materialExameDAO.deleteMaterialExame(id);
-        materialExameDAO.selectAllMaterialExame().forEach(System.out::println);
+        materialExameDAO.delete(id);
+        materialExameDAO.selectAll().forEach(System.out::println);
     }
 }

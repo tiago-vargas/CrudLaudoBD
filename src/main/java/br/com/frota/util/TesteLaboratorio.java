@@ -33,16 +33,16 @@ public class TesteLaboratorio {
         laboratorio.setCnpj("CNPJ-2");
         laboratorio.setCrbm("CRBM-2");
         laboratorio.setNomeFantasia("Novo Nome Fantasia");
-        laboratorioDAO.updateLaboratorio(laboratorio);
+        laboratorioDAO.update(laboratorio);
         laboratorio = laboratorioDAO.findById(id);
         System.out.println(laboratorio);
 
         //Select all
-        List<Laboratorio> laboratorios = laboratorioDAO.selectAllLaboratorio();
+        List<Laboratorio> laboratorios = laboratorioDAO.selectAll();
         laboratorios.forEach(System.out::println);
 
         //Delete
-        laboratorioDAO.deleteLaboratorio(id);
-        laboratorioDAO.selectAllLaboratorio().forEach(System.out::println);
+        laboratorioDAO.delete(id);
+        laboratorioDAO.selectAll().forEach(System.out::println);
     }
 }

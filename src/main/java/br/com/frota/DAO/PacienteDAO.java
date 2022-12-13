@@ -76,7 +76,7 @@ public class PacienteDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<Paciente> selectAllPaciente() {
+    public List<Paciente> selectAll() {
         List<Paciente> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_PACIENTE_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -95,7 +95,7 @@ public class PacienteDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deletePaciente(long id) throws SQLException {
+    public boolean delete(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_PACIENTE_SQL)) {
             statement.setLong(1, id);
 
@@ -105,7 +105,7 @@ public class PacienteDAO extends ConexaoDB {
         }
     }
 
-    public void updatePaciente(Paciente entidade) throws SQLException {
+    public void update(Paciente entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_PACIENTE_SQL)) {
             statement.setString(1, entidade.getNome());
             statement.setDate(2, entidade.getDtNascimento());

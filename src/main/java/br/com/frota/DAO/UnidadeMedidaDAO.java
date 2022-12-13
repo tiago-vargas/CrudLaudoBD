@@ -73,7 +73,7 @@ public class UnidadeMedidaDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<UnidadeMedida> selectAllUnidadeMedida() {
+    public List<UnidadeMedida> selectAll() {
         List<UnidadeMedida> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_UNIDADE_MEDIDA_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -91,7 +91,7 @@ public class UnidadeMedidaDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteUnidadeMedida(long id) throws SQLException {
+    public boolean delete(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_UNIDADE_MEDIDA_SQL)) {
             statement.setLong(1, id);
 
@@ -101,7 +101,7 @@ public class UnidadeMedidaDAO extends ConexaoDB {
         }
     }
 
-    public void updateUnidadeMedida(UnidadeMedida entidade) throws SQLException {
+    public void update(UnidadeMedida entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_UNIDADE_MEDIDA_SQL)) {
             statement.setString(1, entidade.getDescricao());
             statement.setLong(2, entidade.getId());

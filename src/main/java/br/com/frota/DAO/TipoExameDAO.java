@@ -75,7 +75,7 @@ public class TipoExameDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<TipoExame> selectAllTipoExame() {
+    public List<TipoExame> selectAll() {
         List<TipoExame> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_TIPO_EXAME_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -94,7 +94,7 @@ public class TipoExameDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteTipoExame(long id) throws SQLException {
+    public boolean delete(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_TIPO_EXAME_SQL)) {
             statement.setLong(1, id);
 
@@ -104,7 +104,7 @@ public class TipoExameDAO extends ConexaoDB {
         }
     }
 
-    public void updateTipoExame(TipoExame entidade) throws SQLException {
+    public void update(TipoExame entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_TIPO_EXAME_SQL)) {
             statement.setString(1, entidade.getDescricao());
             statement.setString(2, entidade.getObservacao());

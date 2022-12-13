@@ -84,7 +84,7 @@ public class LaboratorioDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<Laboratorio> selectAllLaboratorio() {
+    public List<Laboratorio> selectAll() {
         List<Laboratorio> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_LABORATORIO_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -106,7 +106,7 @@ public class LaboratorioDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteLaboratorio(long id) throws SQLException {
+    public boolean delete(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_LABORATORIO_SQL)) {
             statement.setLong(1, id);
 
@@ -116,7 +116,7 @@ public class LaboratorioDAO extends ConexaoDB {
         }
     }
 
-    public void updateLaboratorio(Laboratorio entidade) throws SQLException {
+    public void update(Laboratorio entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_LABORATORIO_SQL)) {
             statement.setString(1, entidade.getDescricao());
             statement.setString(2, entidade.getCnes());
