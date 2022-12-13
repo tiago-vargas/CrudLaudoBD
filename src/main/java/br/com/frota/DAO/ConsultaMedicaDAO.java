@@ -12,39 +12,32 @@ import java.util.List;
 public class ConsultaMedicaDAO extends GenericDAO {
 
     private static final String INSERT_CONSULTA_MEDICA_SQL =
-            "INSERT INTO consulta_medica (dt_consulta, medico_id, paciente_id, nm_atendimento)"
+            "INSERT INTO consulta_medica (dt_consulta, medico_id, paciente_id, nm_atendimento) "
                     + "VALUES (?, ?, ?, ?);";
-    private static final String SELECT_CONSULTA_MEDICA_BY_ID =
-            "SELECT * FROM consulta_medica WHERE id = ?";
-    private static final String SELECT_ALL_CONSULTA_MEDICA =
-            "SELECT * FROM consulta_medica;";
-    private static final String DELETE_CONSULTA_MEDICA_SQL =
-            "DELETE FROM consulta_medica WHERE id = ?;";
+    private static final String SELECT_CONSULTA_MEDICA_BY_ID_SQL = "SELECT * FROM consulta_medica WHERE id = ?";
+    private static final String SELECT_ALL_CONSULTA_MEDICA_SQL = "SELECT * FROM consulta_medica;";
+    private static final String DELETE_CONSULTA_MEDICA_SQL = "DELETE FROM consulta_medica WHERE id = ?;";
     private static final String UPDATE_CONSULTA_MEDICA_SQL =
             "UPDATE consulta_medica "
                     + "SET dt_consulta = ?, medico_id = ?, paciente_id = ?, nm_atendimento = ? "
                     + "WHERE id = ?;";
-    private static final String TOTAL_SQL =
-            "SELECT count(1) FROM consulta_medica;";
+    private static final String COUNT_SQL = "SELECT count(1) FROM consulta_medica;";
 
     public int count() {
-        return super.count(TOTAL_SQL);
+        return super.count(COUNT_SQL);
     }
 
     public ConsultaMedica insert(ConsultaMedica entidade) {
         try (PreparedStatement preparedStatement = prepararSQL(INSERT_CONSULTA_MEDICA_SQL,
                 java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setDate(1, entidade.getDtConsulta());
-            preparedStatement.setLong(2, entidade.getMedicoId());
-            preparedStatement.setLong(3, entidade.getPacienteId());
-            preparedStatement.setString(4, entidade.getNmAtendimento());
+            injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
 
-            ResultSet result = preparedStatement.getGeneratedKeys();
-            if (result.next()) {
-                entidade.setId(result.getLong(1));
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                entidade.setId(rs.getLong("id"));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -57,17 +50,14 @@ public class ConsultaMedicaDAO extends GenericDAO {
 
     public ConsultaMedica findById(long id) {
         ConsultaMedica entidade = null;
-        try (PreparedStatement preparedStatement = prepararSQL(SELECT_CONSULTA_MEDICA_BY_ID)) {
+
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_CONSULTA_MEDICA_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                Date dtConsulta = rs.getDate("dt_consulta");
-                long medicoId = rs.getLong("medico_id");
-                long pacienteId = rs.getLong("paciente_id");
-                String nmAtendimento = rs.getString("nm_atendimento");
-
-                entidade = new ConsultaMedica(id, dtConsulta, medicoId, pacienteId, nmAtendimento);
+                entidade = new ConsultaMedica(id);
+                populateWithValues(entidade, rs);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -80,17 +70,17 @@ public class ConsultaMedicaDAO extends GenericDAO {
 
     public List<ConsultaMedica> selectAll() {
         List<ConsultaMedica> entidades = new ArrayList<>();
-        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_CONSULTA_MEDICA)) {
+
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_CONSULTA_MEDICA_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 long id = rs.getLong("id");
-                Date dtConsulta = rs.getDate("dt_consulta");
-                long medicoId = rs.getLong("medico_id");
-                long pacienteId = rs.getLong("paciente_id");
-                String nmAtendimento = rs.getString("nm_atendimento");
+                var consultaMedica = new ConsultaMedica(id);
 
-                entidades.add(new ConsultaMedica(id, dtConsulta, medicoId, pacienteId, nmAtendimento));
+                populateWithValues(consultaMedica, rs);
+
+                entidades.add(consultaMedica);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -106,16 +96,37 @@ public class ConsultaMedicaDAO extends GenericDAO {
     }
 
     public void update(ConsultaMedica entidade) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(UPDATE_CONSULTA_MEDICA_SQL)) {
-            statement.setDate(1, entidade.getDtConsulta());
-            statement.setLong(2, entidade.getMedicoId());
-            statement.setLong(3, entidade.getPacienteId());
-            statement.setString(4, entidade.getNmAtendimento());
-            statement.setLong(5, entidade.getId());
-
-            statement.executeUpdate();
+        try (PreparedStatement preparedStatement = prepararSQL(UPDATE_CONSULTA_MEDICA_SQL)) {
+            injectAllValuesAndId(entidade, preparedStatement);
+            preparedStatement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void injectAllValuesAndId(ConsultaMedica entidade, PreparedStatement preparedStatement)
+            throws SQLException {
+        injectAllValues(entidade, preparedStatement);
+        preparedStatement.setLong(5, entidade.getId());
+    }
+
+    private static void injectAllValues(ConsultaMedica entidade, PreparedStatement preparedStatement)
+            throws SQLException {
+        preparedStatement.setDate(1, entidade.getDtConsulta());
+        preparedStatement.setLong(2, entidade.getMedicoId());
+        preparedStatement.setLong(3, entidade.getPacienteId());
+        preparedStatement.setString(4, entidade.getNmAtendimento());
+    }
+
+    private static void populateWithValues(ConsultaMedica entidade, ResultSet rs) throws SQLException {
+        Date dtConsulta = rs.getDate("dt_consulta");
+        long medicoId = rs.getLong("medico_id");
+        long pacienteId = rs.getLong("paciente_id");
+        String nmAtendimento = rs.getString("nm_atendimento");
+
+        entidade.setDtConsulta(dtConsulta);
+        entidade.setMedicoId(medicoId);
+        entidade.setPacienteId(pacienteId);
+        entidade.setNmAtendimento(nmAtendimento);
     }
 }

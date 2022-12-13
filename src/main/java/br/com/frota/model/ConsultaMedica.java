@@ -9,20 +9,16 @@ public class ConsultaMedica extends GenericModel {
     private long pacienteId;
     private String nmAtendimento;
 
-    public ConsultaMedica(long id, Date dtConsulta, long medicoId, long pacienteId, String nmAtendimento) {
-        this.setId(id);
-        this.medicoId = medicoId;
-        this.dtConsulta = dtConsulta;
-        this.pacienteId = pacienteId;
-        this.nmAtendimento = nmAtendimento;
-    }
-
     public ConsultaMedica(Date dtConsulta, long medicoId, long pacienteId, String nmAtendimento) {
         super();
         this.medicoId = medicoId;
         this.dtConsulta = dtConsulta;
         this.pacienteId = pacienteId;
         this.nmAtendimento = nmAtendimento;
+    }
+
+    public ConsultaMedica(long id) {
+        this.setId(id);
     }
 
     public Date getDtConsulta() {
