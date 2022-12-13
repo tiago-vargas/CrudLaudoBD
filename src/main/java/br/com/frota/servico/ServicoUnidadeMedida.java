@@ -4,6 +4,7 @@ import br.com.frota.DAO.UnidadeMedidaDAO;
 import br.com.frota.model.UnidadeMedida;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class ServicoUnidadeMedida {
 
@@ -23,5 +24,13 @@ public class ServicoUnidadeMedida {
 
     public void remover(long id) throws SQLException {
         unidadeMedidaDAO.delete(id);
+    }
+
+    public int contar() {
+        return unidadeMedidaDAO.count();
+    }
+
+    public List<UnidadeMedida> buscarTodos() {
+        return unidadeMedidaDAO.selectAll();
     }
 }

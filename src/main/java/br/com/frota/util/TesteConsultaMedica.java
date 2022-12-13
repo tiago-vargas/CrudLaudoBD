@@ -1,6 +1,5 @@
 package br.com.frota.util;
 
-import br.com.frota.DAO.ConsultaMedicaDAO;
 import br.com.frota.model.ConsultaMedica;
 import br.com.frota.model.Medico;
 import br.com.frota.model.Paciente;
@@ -10,17 +9,14 @@ import br.com.frota.servico.ServicoPaciente;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.util.List;
 
 public class TesteConsultaMedica {
-    static final ConsultaMedicaDAO consultaMedicaDAO = new ConsultaMedicaDAO();
-
     static final ServicoConsultaMedica servicoConsultaMedica = new ServicoConsultaMedica();
 
     public static void main(String[] args) throws SQLException {
 
         //count
-        System.out.println(consultaMedicaDAO.count());
+        System.out.println(servicoConsultaMedica.contar());
 
         var medico1 = new Medico("CRM-1", "Nome do medico 1");
         var medico2 = new Medico("CRM-2", "Nome do medico 2");
@@ -36,31 +32,30 @@ public class TesteConsultaMedica {
         servicoPaciente.salvar(paciente2);
 
         //salvar
-        ConsultaMedica consultaMedica = new ConsultaMedica(new Date(1222111000),
-                medico1.getId(), paciente1.getId(), "No. atendimento 1");
+        var consultaMedica =
+                new ConsultaMedica(new Date(1222111000), medico1.getId(), paciente1.getId(), "NA-1");
         servicoConsultaMedica.salvar(consultaMedica);
-        long id = consultaMedica.getId();
 
         //buscar por ID
-        consultaMedica = consultaMedicaDAO.findById(id);
+        long id = consultaMedica.getId();
+        consultaMedica = servicoConsultaMedica.buscarPorId(id);
         System.out.println(consultaMedica);
 
         //Update
         consultaMedica.setDtConsulta(new Date(1400222111000L));
         consultaMedica.setMedicoId(medico2.getId());
         consultaMedica.setPacienteId(paciente2.getId());
-        consultaMedica.setNmAtendimento("No. do atendimento 2");
-        consultaMedicaDAO.update(consultaMedica);
-        consultaMedica = consultaMedicaDAO.findById(id);
+        consultaMedica.setNmAtendimento("NA-2");
+        servicoConsultaMedica.update(consultaMedica);
+        consultaMedica = servicoConsultaMedica.buscarPorId(id);
         System.out.println(consultaMedica);
 
         //Select all
-        List<ConsultaMedica> consultaMedicas = consultaMedicaDAO.selectAll();
-        consultaMedicas.forEach(System.out::println);
+        servicoConsultaMedica.buscarTodos().forEach(System.out::println);
 
         //Delete
-        consultaMedicaDAO.delete(id);
-        consultaMedicaDAO.selectAll().forEach(System.out::println);
+        servicoConsultaMedica.remover(id);
+        servicoConsultaMedica.buscarTodos().forEach(System.out::println);
 
         servicoMedico.remover(medico1.getId());
         servicoMedico.remover(medico2.getId());

@@ -4,6 +4,7 @@ import br.com.frota.DAO.ConsultaMedicaDAO;
 import br.com.frota.model.ConsultaMedica;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class ServicoConsultaMedica {
 
@@ -23,5 +24,13 @@ public class ServicoConsultaMedica {
 
     public void remover(long id) throws SQLException {
         consultaMedicaDAO.delete(id);
+    }
+
+    public int contar() {
+        return consultaMedicaDAO.count();
+    }
+
+    public List<ConsultaMedica> buscarTodos() {
+        return consultaMedicaDAO.selectAll();
     }
 }

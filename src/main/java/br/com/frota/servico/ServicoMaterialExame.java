@@ -4,6 +4,7 @@ import br.com.frota.DAO.MaterialExameDAO;
 import br.com.frota.model.MaterialExame;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class ServicoMaterialExame {
 
@@ -23,5 +24,13 @@ public class ServicoMaterialExame {
 
     public void remover(long id) throws SQLException {
         materialExameDAO.delete(id);
+    }
+
+    public int contar() {
+        return materialExameDAO.count();
+    }
+
+    public List<MaterialExame> buscarTodos() {
+        return materialExameDAO.selectAll();
     }
 }
