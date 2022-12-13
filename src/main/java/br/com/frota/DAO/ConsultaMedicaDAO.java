@@ -76,11 +76,10 @@ public class ConsultaMedicaDAO extends GenericDAO {
 
             while (rs.next()) {
                 long id = rs.getLong("id");
-                var consultaMedica = new ConsultaMedica(id);
+                var entidade = new ConsultaMedica(id);
+                populateWithValues(entidade, rs);
 
-                populateWithValues(consultaMedica, rs);
-
-                entidades.add(consultaMedica);
+                entidades.add(entidade);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -98,6 +97,7 @@ public class ConsultaMedicaDAO extends GenericDAO {
     public void update(ConsultaMedica entidade) throws SQLException {
         try (PreparedStatement preparedStatement = prepararSQL(UPDATE_CONSULTA_MEDICA_SQL)) {
             injectAllValuesAndId(entidade, preparedStatement);
+
             preparedStatement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);

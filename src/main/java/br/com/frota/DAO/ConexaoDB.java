@@ -14,7 +14,7 @@ public class ConexaoDB {
 
     public static Connection conexaoDB() throws ClassNotFoundException, SQLException {
         Class.forName("org.postgresql.Driver");
-        Connection conexaoDB = DriverManager.getConnection(dbURL.concat(dbName), username, password);
+        Connection conexaoDB = DriverManager.getConnection(dbURL + dbName, username, password);
 
         if (conexaoDB != null) {
             System.out.println("Conexão com o banco de dados gerada com sucesso! ");

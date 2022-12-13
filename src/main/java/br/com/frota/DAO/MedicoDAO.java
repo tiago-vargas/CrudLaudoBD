@@ -100,6 +100,7 @@ public class MedicoDAO extends GenericDAO {
 
     private static void injectAllValuesAndId(Medico entidade, PreparedStatement statement) throws SQLException {
         injectAllValues(entidade, statement);
+
         statement.setLong(3, entidade.getId());
     }
 
