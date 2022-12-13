@@ -7,13 +7,13 @@ import java.sql.SQLException;
 
 public class ServicoPaciente {
 
-    private PacienteDAO pacienteDAO = new PacienteDAO();
+    private final PacienteDAO pacienteDAO = new PacienteDAO();
 
     public Paciente salvar(Paciente entidade) {
         return pacienteDAO.insert(entidade);
     }
 
-    public Paciente buscarPorId(Integer id) {
+    public Paciente buscarPorId(long id) {
         return pacienteDAO.findById(id);
     }
 
@@ -21,7 +21,7 @@ public class ServicoPaciente {
         pacienteDAO.updatePaciente(medico);
     }
 
-    public void remover(Integer id) throws SQLException {
+    public void remover(long id) throws SQLException {
         pacienteDAO.deletePaciente(id);
     }
 }

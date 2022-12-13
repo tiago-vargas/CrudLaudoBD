@@ -7,7 +7,7 @@ public class Paciente extends GenericModel {
     private String nome;
     private Date dtNascimento;
 
-    public Paciente(Long id, String nome, Date dtNascimento) {
+    public Paciente(long id, String nome, Date dtNascimento) {
         this.setId(id);
         this.nome = nome;
         this.dtNascimento = dtNascimento;

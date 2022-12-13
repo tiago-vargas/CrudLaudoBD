@@ -1,7 +1,8 @@
 package br.com.frota.DAO;
 
-import br.com.frota.model.MaterialExame;
+import br.com.frota.model.ConsultaMedica;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,13 +11,21 @@ import java.util.List;
 
 public class ConsultaMedicaDAO extends ConexaoDB {
 
-    private static final String INSERT_CONSULTA_MEDICA_SQL = "INSERT INTO consulta_medica (dt_consulta, medico_id) VALUES (?, ?);";
-    private static final String SELECT_CONSULTA_MEDICA_BY_ID = "SELECT * FROM consulta_medica WHERE id = ?";
-    private static final String SELECT_ALL_CONSULTA_MEDICA = "SELECT * FROM consulta_medica;";
-    private static final String DELETE_CONSULTA_MEDICA_SQL = "DELETE FROM consulta_medica WHERE id = ?;";
-    private static final String BUSCAR_POR_MATERIAL_CONSULTA_MEDICA_SQL = "DELETE FROM consulta_medica WHERE dt_consulta = ?;";
-    private static final String UPDATE_CONSULTA_MEDICA_SQL = "UPDATE consulta_medica SET dt_consulta = ?, medico_id = ? WHERE id = ?;";
-    private static final String TOTAL = "SELECT count(1) FROM consulta_medica;";
+    private static final String INSERT_CONSULTA_MEDICA_SQL =
+            "INSERT INTO consulta_medica (dt_consulta, medico_id, paciente_id, nm_atendimento)"
+                    + "VALUES (?, ?, ?, ?);";
+    private static final String SELECT_CONSULTA_MEDICA_BY_ID =
+            "SELECT * FROM consulta_medica WHERE id = ?";
+    private static final String SELECT_ALL_CONSULTA_MEDICA =
+            "SELECT * FROM consulta_medica;";
+    private static final String DELETE_CONSULTA_MEDICA_SQL =
+            "DELETE FROM consulta_medica WHERE id = ?;";
+    private static final String UPDATE_CONSULTA_MEDICA_SQL =
+            "UPDATE consulta_medica "
+                    + "SET dt_consulta = ?, medico_id = ?, paciente_id = ?, nm_atendimento = ? "
+                    + "WHERE id = ?;";
+    private static final String TOTAL =
+            "SELECT count(1) FROM consulta_medica;";
 
     public Integer count() {
         Integer count = 0;
@@ -35,12 +44,14 @@ public class ConsultaMedicaDAO extends ConexaoDB {
         return count;
     }
 
-    public MaterialExame insert(MaterialExame entidade) {
+    public ConsultaMedica insert(ConsultaMedica entidade) {
         try (PreparedStatement preparedStatement = prepararSQL(INSERT_CONSULTA_MEDICA_SQL,
                 java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, entidade.getMaterial());
-            preparedStatement.setString(2, entidade.getObservacao());
+            preparedStatement.setDate(1, entidade.getDtConsulta());
+            preparedStatement.setLong(2, entidade.getMedicoId());
+            preparedStatement.setLong(3, entidade.getPacienteId());
+            preparedStatement.setString(4, entidade.getNmAtendimento());
 
             preparedStatement.executeUpdate();
 
@@ -57,65 +68,53 @@ public class ConsultaMedicaDAO extends ConexaoDB {
         return entidade;
     }
 
-    public MaterialExame findByMaterial(String dtConsulta) {
-        MaterialExame entidade = null;
-        try (PreparedStatement preparedStatement = prepararSQL(BUSCAR_POR_MATERIAL_CONSULTA_MEDICA_SQL)) {
-            preparedStatement.setString(1, dtConsulta);
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                entidade = new MaterialExame(rs.getLong("id"), rs.getString("dt_consulta"), rs.getString("medico_id"));
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return entidade;
-    }
-
-    public MaterialExame findById(long id) {
-        MaterialExame entidade = null;
+    public ConsultaMedica findById(long id) {
+        ConsultaMedica entidade = null;
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_CONSULTA_MEDICA_BY_ID)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                String dtConsulta = rs.getString("dt_consulta");
-                String medicoId = rs.getString("medico_id");
-                entidade = new MaterialExame(id, dtConsulta, medicoId);
+                Date dtConsulta = rs.getDate("dt_consulta");
+                long medicoId = rs.getLong("medico_id");
+                long pacienteId = rs.getLong("paciente_id");
+                String nmAtendimento = rs.getString("nm_atendimento");
+                entidade = new ConsultaMedica(id, dtConsulta, medicoId, pacienteId, nmAtendimento);
             }
         } catch (SQLException e) {
             printSQLException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         return entidade;
     }
 
-    public List<MaterialExame> selectAllMaterialExame() {
-        List<MaterialExame> entidades = new ArrayList<>();
+    public List<ConsultaMedica> selectAllConsultaMedica() {
+        List<ConsultaMedica> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_CONSULTA_MEDICA)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 long id = rs.getLong("id");
-                String dtConsulta = rs.getString("dt_consulta");
-                String medicoId = rs.getString("medico_id");
-                entidades.add(new MaterialExame(id, dtConsulta, medicoId));
+                Date dtConsulta = rs.getDate("dt_consulta");
+                long medicoId = rs.getLong("medico_id");
+                long pacienteId = rs.getLong("paciente_id");
+                String nmAtendimento = rs.getString("nm_atendimento");
+                entidades.add(new ConsultaMedica(id, dtConsulta, medicoId, pacienteId, nmAtendimento));
             }
         } catch (SQLException e) {
             printSQLException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         return entidades;
     }
 
-    public boolean deleteMaterialExame(int id) throws SQLException {
+    public boolean deleteConsultaMedica(long id) throws SQLException {
         try (PreparedStatement statement = prepararSQL(DELETE_CONSULTA_MEDICA_SQL)) {
-            statement.setInt(1, id);
+            statement.setLong(1, id);
 
             return statement.executeUpdate() > 0;
         } catch (ClassNotFoundException e) {
@@ -123,11 +122,15 @@ public class ConsultaMedicaDAO extends ConexaoDB {
         }
     }
 
-    public void updateMaterialExame(MaterialExame entidade) throws SQLException {
+    public void updateConsultaMedica(ConsultaMedica entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_CONSULTA_MEDICA_SQL)) {
-            statement.setString(1, entidade.getMaterial());
-            statement.setString(2, entidade.getObservacao());
-            statement.setLong(3, entidade.getId());
+            statement.setDate(1, entidade.getDtConsulta());
+            statement.setLong(2, entidade.getMedicoId());
+            statement.setLong(3, entidade.getPacienteId());
+            statement.setString(4, entidade.getNmAtendimento());
+            statement.setLong(5, entidade.getId());
+
+            statement.executeUpdate();
 
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
