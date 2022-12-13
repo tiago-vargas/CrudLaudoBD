@@ -28,17 +28,13 @@ public class LaboratorioDAO extends GenericDAO {
         try (PreparedStatement preparedStatement = prepararSQL(INSERT_LABORATORIO_SQL,
                 java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, entidade.getDescricao());
-            preparedStatement.setString(2, entidade.getCnes());
-            preparedStatement.setString(3, entidade.getCnpj());
-            preparedStatement.setString(4, entidade.getCrbm());
-            preparedStatement.setString(5, entidade.getNomeFantasia());
+            injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
 
-            ResultSet result = preparedStatement.getGeneratedKeys();
-            if (result.next()) {
-                entidade.setId(result.getLong(1));
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                entidade.setId(rs.getLong("id"));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -51,45 +47,43 @@ public class LaboratorioDAO extends GenericDAO {
 
     public Laboratorio findById(long id) {
         Laboratorio entidade = null;
+
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_LABORATORIO_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                String descricao = rs.getString("descricao");
-                String cnes = rs.getString("cnes");
-                String cnpj = rs.getString("cnpj");
-                String crbm = rs.getString("crbm");
-                String nomeFantasia = rs.getString("nome_fantasia");
-                entidade = new Laboratorio(id, descricao, cnes, cnpj, crbm, nomeFantasia);
+                entidade = new Laboratorio(id);
+                populateWithValues(entidade, rs);
             }
         } catch (SQLException e) {
             printSQLException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         return entidade;
     }
 
     public List<Laboratorio> selectAll() {
         List<Laboratorio> entidades = new ArrayList<>();
+
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_LABORATORIO_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 long id = rs.getLong("id");
-                String descricao = rs.getString("descricao");
-                String cnes = rs.getString("cnes");
-                String cnpj = rs.getString("cnpj");
-                String crbm = rs.getString("crbm");
-                String nomeFantasia = rs.getString("nome_fantasia");
-                entidades.add(new Laboratorio(id, descricao, cnes, cnpj, crbm, nomeFantasia));
+                var laboratorio = new Laboratorio(id);
+                populateWithValues(laboratorio, rs);
+
+                entidades.add(laboratorio);
             }
         } catch (SQLException e) {
             printSQLException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         return entidades;
     }
 
@@ -98,17 +92,41 @@ public class LaboratorioDAO extends GenericDAO {
     }
 
     public void update(Laboratorio entidade) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(UPDATE_LABORATORIO_SQL)) {
-            statement.setString(1, entidade.getDescricao());
-            statement.setString(2, entidade.getCnes());
-            statement.setString(3, entidade.getCnpj());
-            statement.setString(4, entidade.getCrbm());
-            statement.setString(5, entidade.getNomeFantasia());
-            statement.setLong(6, entidade.getId());
+        try (PreparedStatement preparedStatement = prepararSQL(UPDATE_LABORATORIO_SQL)) {
+            injectAllValuesAndId(entidade, preparedStatement);
 
-            statement.executeUpdate();
+            preparedStatement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void injectAllValuesAndId(Laboratorio entidade, PreparedStatement preparedStatement)
+            throws SQLException {
+        injectAllValues(entidade, preparedStatement);
+        preparedStatement.setLong(6, entidade.getId());
+    }
+
+    private static void injectAllValues(Laboratorio entidade, PreparedStatement preparedStatement)
+            throws SQLException {
+        preparedStatement.setString(1, entidade.getDescricao());
+        preparedStatement.setString(2, entidade.getCnes());
+        preparedStatement.setString(3, entidade.getCnpj());
+        preparedStatement.setString(4, entidade.getCrbm());
+        preparedStatement.setString(5, entidade.getNomeFantasia());
+    }
+
+    private static void populateWithValues(Laboratorio entidade, ResultSet rs) throws SQLException {
+        String descricao = rs.getString("descricao");
+        String cnes = rs.getString("cnes");
+        String cnpj = rs.getString("cnpj");
+        String crbm = rs.getString("crbm");
+        String nomeFantasia = rs.getString("nome_fantasia");
+
+        entidade.setDescricao(descricao);
+        entidade.setCnes(cnes);
+        entidade.setCnpj(cnpj);
+        entidade.setCrbm(crbm);
+        entidade.setNomeFantasia(nomeFantasia);
     }
 }
