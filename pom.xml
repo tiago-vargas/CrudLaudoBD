@@ -3,7 +3,7 @@
   <groupId>Laudo</groupId>
   <artifactId>Laudo</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  
+
    <dependencies>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -14,7 +14,7 @@
            <groupId>org.junit.jupiter</groupId>
            <artifactId>junit-jupiter</artifactId>
            <version>RELEASE</version>
-           <scope>test</scope>
+           <scope>compile</scope>
        </dependency>
    </dependencies>
     <properties>

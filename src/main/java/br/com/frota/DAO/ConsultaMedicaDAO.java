@@ -27,8 +27,8 @@ public class ConsultaMedicaDAO extends ConexaoDB {
     private static final String TOTAL =
             "SELECT count(1) FROM consulta_medica;";
 
-    public Integer count() {
-        Integer count = 0;
+    public int count() {
+        int count = 0;
         try (PreparedStatement preparedStatement = prepararSQL(TOTAL)) {
             ResultSet rs = preparedStatement.executeQuery();
 

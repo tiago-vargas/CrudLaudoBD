@@ -13,9 +13,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class TesteConsultaMedica {
-    static ConsultaMedicaDAO consultaMedicaDAO = new ConsultaMedicaDAO();
+    static final ConsultaMedicaDAO consultaMedicaDAO = new ConsultaMedicaDAO();
 
-    static ServicoConsultaMedica servicoConsultaMedica = new ServicoConsultaMedica();
+    static final ServicoConsultaMedica servicoConsultaMedica = new ServicoConsultaMedica();
 
     public static void main(String[] args) throws SQLException {
 

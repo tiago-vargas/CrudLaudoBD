@@ -17,11 +17,12 @@ public class MedicoDAO extends ConexaoDB {
     private static final String UPDATE_MEDICO_SQL = "UPDATE medico SET crm = ?, nome = ? WHERE id = ?;";
     private static final String TOTAL_SQL = "SELECT count(1) FROM medico;";
 
-    public Integer count() {
-        Integer count = 0;
+    public int count() {
+        int count = 0;
         try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
+            preparedStatement.getConnection().close();
             while (rs.next()) {
                 count = rs.getInt("count");
             }

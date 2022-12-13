@@ -17,8 +17,8 @@ public class TipoExameDAO extends ConexaoDB {
     private static final String UPDATE_TIPO_EXAME_SQL = "UPDATE tipo_exame SET descricao = ?, observacao = ? WHERE id = ?;";
     private static final String TOTAL_SQL = "SELECT count(1) FROM tipo_exame;";
 
-    public Integer count() {
-        Integer count = 0;
+    public int count() {
+        int count = 0;
         try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 

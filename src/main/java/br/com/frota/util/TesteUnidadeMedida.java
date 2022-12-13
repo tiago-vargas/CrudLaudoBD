@@ -8,9 +8,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class TesteUnidadeMedida {
-    static UnidadeMedidaDAO unidadeMedidaDAO = new UnidadeMedidaDAO();
+    static final UnidadeMedidaDAO unidadeMedidaDAO = new UnidadeMedidaDAO();
 
-    static ServicoUnidadeMedida servicoUnidadeMedida = new ServicoUnidadeMedida();
+    static final ServicoUnidadeMedida servicoUnidadeMedida = new ServicoUnidadeMedida();
 
     public static void main(String[] args) throws SQLException {
 

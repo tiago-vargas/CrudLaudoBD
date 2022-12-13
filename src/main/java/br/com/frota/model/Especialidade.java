@@ -17,10 +17,6 @@ public class Especialidade extends GenericModel {
         this.observacao = observacao;
     }
 
-    public Especialidade(long id) {
-        this.setId(id);
-    }
-
     public String getDescricao() {
         return descricao;
     }

@@ -14,12 +14,11 @@ public class SiglaFormacaoDAO extends ConexaoDB {
     private static final String SELECT_SIGLA_FORMACAO_BY_ID_SQL = "SELECT * FROM sigla_formacao WHERE id = ?";
     private static final String SELECT_ALL_SIGLA_FORMACAO_SQL = "SELECT * FROM sigla_formacao;";
     private static final String DELETE_SIGLA_FORMACAO_SQL = "DELETE FROM sigla_formacao WHERE id = ?;";
-    private static final String BUSCAR_SIGLA_FORMACAO_POR_SIGLA_SQL = "DELETE FROM sigla_formacao WHERE sigla = ?;";
     private static final String UPDATE_SIGLA_FORMACAO_SQL = "UPDATE sigla_formacao SET sigla = ? WHERE id = ?;";
     private static final String TOTAL_SQL = "SELECT count(1) FROM sigla_formacao;";
 
-    public Integer count() {
-        Integer count = 0;
+    public int count() {
+        int count = 0;
         try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -46,24 +45,6 @@ public class SiglaFormacaoDAO extends ConexaoDB {
             ResultSet result = preparedStatement.getGeneratedKeys();
             if (result.next()) {
                 entidade.setId(result.getLong(1));
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return entidade;
-    }
-
-    public SiglaFormacao findBySigla(String sigla) {
-        SiglaFormacao entidade = null;
-        try (PreparedStatement preparedStatement = prepararSQL(BUSCAR_SIGLA_FORMACAO_POR_SIGLA_SQL)) {
-            preparedStatement.setString(1, sigla);
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                entidade = new SiglaFormacao(rs.getLong("id"), rs.getString("sigla"));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -125,6 +106,7 @@ public class SiglaFormacaoDAO extends ConexaoDB {
             statement.setString(1, entidade.getSigla());
             statement.setLong(2, entidade.getId());
 
+            statement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

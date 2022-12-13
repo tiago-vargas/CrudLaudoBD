@@ -8,9 +8,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class TesteSiglaFormacao {
-    static SiglaFormacaoDAO siglaFormacaoDAO = new SiglaFormacaoDAO();
+    static final SiglaFormacaoDAO siglaFormacaoDAO = new SiglaFormacaoDAO();
 
-    static ServicoSiglaFormacao servicoSiglaFormacao = new ServicoSiglaFormacao();
+    static final ServicoSiglaFormacao servicoSiglaFormacao = new ServicoSiglaFormacao();
 
     public static void main(String[] args) throws SQLException {
         //count

@@ -8,9 +8,9 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class TesteTipoExame {
-    static TipoExameDAO tipoExameDAO = new TipoExameDAO();
+    static final TipoExameDAO tipoExameDAO = new TipoExameDAO();
 
-    static ServicoTipoExame servicoTipoExame = new ServicoTipoExame();
+    static final ServicoTipoExame servicoTipoExame = new ServicoTipoExame();
 
     public static void main(String[] args) throws SQLException {
 

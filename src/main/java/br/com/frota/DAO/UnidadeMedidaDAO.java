@@ -17,8 +17,8 @@ public class UnidadeMedidaDAO extends ConexaoDB {
     private static final String UPDATE_UNIDADE_MEDIDA_SQL = "UPDATE unidade_medida SET descricao = ? WHERE id = ?;";
     private static final String TOTAL_SQL = "SELECT count(1) FROM unidade_medida;";
 
-    public Integer count() {
-        Integer count = 0;
+    public int count() {
+        int count = 0;
         try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
