@@ -111,6 +111,7 @@ public class PacienteDAO extends ConexaoDB {
             statement.setDate(2, entidade.getDtNascimento());
             statement.setLong(3, entidade.getId());
 
+            statement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

@@ -111,6 +111,7 @@ public class MedicoDAO extends ConexaoDB {
             statement.setString(2, entidade.getNome());
             statement.setLong(3, entidade.getId());
 
+            statement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

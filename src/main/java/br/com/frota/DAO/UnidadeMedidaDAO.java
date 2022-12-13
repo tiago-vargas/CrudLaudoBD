@@ -106,6 +106,7 @@ public class UnidadeMedidaDAO extends ConexaoDB {
             statement.setString(1, entidade.getDescricao());
             statement.setLong(2, entidade.getId());
 
+            statement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
