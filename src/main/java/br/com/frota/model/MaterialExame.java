@@ -5,21 +5,14 @@ public class MaterialExame extends GenericModel {
     private String material;
     private String observacao;
 
-    public MaterialExame(Long id, String material, String observacao) {
-        this.setId(id);
-        this.material = material;
-        this.observacao = observacao;
-    }
-
     public MaterialExame(String material, String observacao) {
         super();
         this.material = material;
         this.observacao = observacao;
     }
 
-    public MaterialExame(Long id, String material) {
+    public MaterialExame(long id) {
         this.setId(id);
-        this.material = material;
     }
 
     public String getMaterial() {

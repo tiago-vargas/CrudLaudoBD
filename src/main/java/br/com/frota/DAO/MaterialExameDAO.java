@@ -27,14 +27,13 @@ public class MaterialExameDAO extends GenericDAO {
         try (PreparedStatement preparedStatement = prepararSQL(INSERT_MATERIAL_EXAME_SQL,
                 java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, entidade.getMaterial());
-            preparedStatement.setString(2, entidade.getObservacao());
+            injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
 
-            ResultSet result = preparedStatement.getGeneratedKeys();
-            if (result.next()) {
-                entidade.setId(result.getLong(1));
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                entidade.setId(rs.getLong(1));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -47,39 +46,43 @@ public class MaterialExameDAO extends GenericDAO {
 
     public MaterialExame findById(long id) {
         MaterialExame entidade = null;
+
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_MATERIAL_EXAME_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                String material = rs.getString("material");
-                String observacao = rs.getString("observacao");
-                entidade = new MaterialExame(id, material, observacao);
+                entidade = new MaterialExame(id);
+                populateWithValues(entidade, rs);
             }
         } catch (SQLException e) {
             printSQLException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         return entidade;
     }
 
     public List<MaterialExame> selectAll() {
         List<MaterialExame> entidades = new ArrayList<>();
+
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_MATERIAL_EXAME_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 long id = rs.getLong("id");
-                String material = rs.getString("material");
-                String observacao = rs.getString("observacao");
-                entidades.add(new MaterialExame(id, material, observacao));
+                var entidade = new MaterialExame(id);
+                populateWithValues(entidade, rs);
+
+                entidades.add(entidade);
             }
         } catch (SQLException e) {
             printSQLException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         return entidades;
     }
 
@@ -88,14 +91,30 @@ public class MaterialExameDAO extends GenericDAO {
     }
 
     public void update(MaterialExame entidade) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(UPDATE_MATERIAL_EXAME_SQL)) {
-            statement.setString(1, entidade.getMaterial());
-            statement.setString(2, entidade.getObservacao());
-            statement.setLong(3, entidade.getId());
+        try (PreparedStatement preparedStatement = prepararSQL(UPDATE_MATERIAL_EXAME_SQL)) {
+            injectAllValuesAndId(entidade, preparedStatement);
 
-            statement.executeUpdate();
+            preparedStatement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void injectAllValuesAndId(MaterialExame entidade, PreparedStatement preparedStatement) throws SQLException {
+        injectAllValues(entidade, preparedStatement);
+        preparedStatement.setLong(3, entidade.getId());
+    }
+
+    private static void injectAllValues(MaterialExame entidade, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, entidade.getMaterial());
+        preparedStatement.setString(2, entidade.getObservacao());
+    }
+
+    private static void populateWithValues(MaterialExame entidade, ResultSet rs) throws SQLException {
+        String material = rs.getString("material");
+        String observacao = rs.getString("observacao");
+
+        entidade.setMaterial(material);
+        entidade.setObservacao(observacao);
     }
 }
