@@ -27,14 +27,13 @@ public class EspecialidadeDAO extends GenericDAO {
         try (PreparedStatement preparedStatement = prepararSQL(INSERT_ESPECIALIDADE_SQL,
                 java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, entidade.getDescricao());
-            preparedStatement.setString(2, entidade.getObservacao());
+            injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
 
-            ResultSet result = preparedStatement.getGeneratedKeys();
-            if (result.next()) {
-                entidade.setId(result.getLong(1));
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                entidade.setId(rs.getLong("id"));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -52,9 +51,8 @@ public class EspecialidadeDAO extends GenericDAO {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                String descricao = rs.getString("descricao");
-                String observacao = rs.getString("observacao");
-                entidade = new Especialidade(id, descricao, observacao);
+                entidade = new Especialidade(id);
+                populateWithValues(entidade, rs);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -71,9 +69,11 @@ public class EspecialidadeDAO extends GenericDAO {
 
             while (rs.next()) {
                 long id = rs.getLong("id");
-                String descricao = rs.getString("descricao");
-                String observacao = rs.getString("observacao");
-                entidades.add(new Especialidade(id, descricao, observacao));
+                var especialidade = new Especialidade(id);
+
+                populateWithValues(especialidade, rs);
+
+                entidades.add(especialidade);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -88,14 +88,31 @@ public class EspecialidadeDAO extends GenericDAO {
     }
 
     public void update(Especialidade entidade) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(UPDATE_ESPECIALIDADE_SQL)) {
-            statement.setString(1, entidade.getDescricao());
-            statement.setString(2, entidade.getObservacao());
-            statement.setLong(3, entidade.getId());
-
-            statement.executeUpdate();
+        try (PreparedStatement preparedStatement = prepararSQL(UPDATE_ESPECIALIDADE_SQL)) {
+            injectAllValuesAndId(entidade, preparedStatement);
+            preparedStatement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void injectAllValuesAndId(Especialidade entidade, PreparedStatement preparedStatement)
+            throws SQLException {
+        injectAllValues(entidade, preparedStatement);
+        preparedStatement.setLong(3, entidade.getId());
+    }
+
+    private static void injectAllValues(Especialidade entidade, PreparedStatement preparedStatement)
+            throws SQLException {
+        preparedStatement.setString(1, entidade.getDescricao());
+        preparedStatement.setString(2, entidade.getObservacao());
+    }
+
+    private static void populateWithValues(Especialidade entidade, ResultSet rs) throws SQLException {
+        String descricao = rs.getString("descricao");
+        String observacao = rs.getString("observacao");
+
+        entidade.setDescricao(descricao);
+        entidade.setObservacao(observacao);
     }
 }
