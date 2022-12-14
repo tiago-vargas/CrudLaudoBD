@@ -1,6 +1,5 @@
 package br.com.frota.util;
 
-import br.com.frota.DAO.MedicoDAO;
 import br.com.frota.model.Medico;
 import br.com.frota.servico.ServicoMedico;
 
@@ -8,37 +7,35 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class TesteMedico {
-    static MedicoDAO medicoDAO = new MedicoDAO();
-
-    static ServicoMedico servicoMedico = new ServicoMedico();
+    static final ServicoMedico servicoMedico = new ServicoMedico();
 
     public static void main(String[] args) throws SQLException {
 
         //count
-        System.out.println(medicoDAO.count());
+        System.out.println(servicoMedico.contar());
 
         //salvar
-        Medico medico = new Medico("CRM", "John Doe");
+        Medico medico = new Medico("CRM-1", "Name-1");
         servicoMedico.salvar(medico);
-        long id = medico.getId();
 
         //buscar por ID
-        medico = medicoDAO.findById(id);
+        long id = medico.getId();
+        medico = servicoMedico.buscarPorId(id);
         System.out.println(medico);
 
         //Update
         medico.setCrm("CRM-2");
-        medico.setNome("Jane Doe");
-        medicoDAO.updateMedico(medico);
-        medico = medicoDAO.findById(id);
+        medico.setNome("Name-2");
+        servicoMedico.update(medico);
+        medico = servicoMedico.buscarPorId(id);
         System.out.println(medico);
 
         //Select all
-        List<Medico> medicos = medicoDAO.selectAllMedico();
+        List<Medico> medicos = servicoMedico.buscarTodos();
         medicos.forEach(System.out::println);
 
         //Delete
-        medicoDAO.deleteMedico(id);
-        medicoDAO.selectAllMedico().forEach(System.out::println);
+        servicoMedico.remover(id);
+        servicoMedico.buscarTodos().forEach(System.out::println);
     }
 }

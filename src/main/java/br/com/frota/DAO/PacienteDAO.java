@@ -9,44 +9,30 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
 
-public class PacienteDAO extends ConexaoDB {
+public class PacienteDAO extends GenericDAO {
 
     private static final String INSERT_PACIENTE_SQL = "INSERT INTO paciente (nome, dt_nascimento) VALUES (?, ?);";
-    private static final String SELECT_PACIENTE_BY_ID = "SELECT id, nome, dt_nascimento FROM paciente WHERE id = ?";
+    private static final String SELECT_PACIENTE_BY_ID = "SELECT * FROM paciente WHERE id = ?";
     private static final String SELECT_ALL_PACIENTE_SQL = "SELECT * FROM paciente;";
     private static final String DELETE_PACIENTE_SQL = "DELETE FROM paciente WHERE id = ?;";
     private static final String UPDATE_PACIENTE_SQL = "UPDATE paciente SET nome = ?, dt_nascimento = ? WHERE id = ?;";
-    private static final String TOTAL_SQL = "SELECT count(1) FROM paciente;";
+    private static final String COUNT_SQL = "SELECT count(1) FROM paciente;";
 
     public int count() {
-        int count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+        return super.count(COUNT_SQL);
     }
 
     public Paciente insert(Paciente entidade) {
         try (PreparedStatement preparedStatement = prepararSQL(INSERT_PACIENTE_SQL,
                 java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, entidade.getNome());
-            preparedStatement.setDate(2, entidade.getDtNascimento());
+            injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
 
-            ResultSet result = preparedStatement.getGeneratedKeys();
-            if (result.next()) {
-                entidade.setId(result.getLong(1));
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                entidade.setId(rs.getLong("id"));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -59,60 +45,75 @@ public class PacienteDAO extends ConexaoDB {
 
     public Paciente findById(long id) {
         Paciente entidade = null;
+
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_PACIENTE_BY_ID)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                String nome = rs.getString("nome");
-                Date dt_nascimento = rs.getDate("dt_nascimento");
-                entidade = new Paciente(id, nome, dt_nascimento);
+                entidade = new Paciente(id);
+                populateWithValues(entidade, rs);
             }
         } catch (SQLException e) {
             printSQLException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         return entidade;
     }
 
-    public List<Paciente> selectAllPaciente() {
+    public List<Paciente> selectAll() {
         List<Paciente> entidades = new ArrayList<>();
+
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_PACIENTE_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 long id = rs.getLong("id");
-                String nome = rs.getString("nome");
-                Date dt_nascimento = rs.getDate("dt_nascimento");
-                entidades.add(new Paciente(id, nome, dt_nascimento));
+                var entidade = new Paciente(id);
+                populateWithValues(entidade, rs);
+
+                entidades.add(entidade);
             }
         } catch (SQLException e) {
             printSQLException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         return entidades;
     }
 
-    public boolean deletePaciente(long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_PACIENTE_SQL)) {
-            statement.setLong(1, id);
+    public boolean delete(long id) throws SQLException {
+        return super.delete(DELETE_PACIENTE_SQL, id);
+    }
 
-            return statement.executeUpdate() > 0;
+    public void update(Paciente entidade) throws SQLException {
+        try (PreparedStatement preparedStatement = prepararSQL(UPDATE_PACIENTE_SQL)) {
+            injectAllValuesAndId(entidade, preparedStatement);
+
+            preparedStatement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void updatePaciente(Paciente entidade) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(UPDATE_PACIENTE_SQL)) {
-            statement.setString(1, entidade.getNome());
-            statement.setDate(2, entidade.getDtNascimento());
-            statement.setLong(3, entidade.getId());
+    private static void injectAllValuesAndId(Paciente entidade, PreparedStatement preparedStatement) throws SQLException {
+        injectAllValues(entidade, preparedStatement);
+        preparedStatement.setLong(3, entidade.getId());
+    }
 
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    private static void injectAllValues(Paciente entidade, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, entidade.getNome());
+        preparedStatement.setDate(2, entidade.getDtNascimento());
+    }
+
+    private static void populateWithValues(Paciente entidade, ResultSet rs) throws SQLException {
+        String nome = rs.getString("nome");
+        Date dtNascimento = rs.getDate("dt_nascimento");
+
+        entidade.setNome(nome);
+        entidade.setDtNascimento(dtNascimento);
     }
 }

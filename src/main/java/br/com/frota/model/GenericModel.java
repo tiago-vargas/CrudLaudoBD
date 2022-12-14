@@ -14,8 +14,6 @@ public class GenericModel {
 
     @Override
     public String toString() {
-        return "GenericModel{" +
-                "id=" + id +
-                '}';
+        return "GenericModel{" + "id=" + id + "}";
     }
 }

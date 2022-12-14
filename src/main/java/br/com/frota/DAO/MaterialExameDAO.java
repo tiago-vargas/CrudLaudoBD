@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MaterialExameDAO extends ConexaoDB {
+public class MaterialExameDAO extends GenericDAO {
 
     private static final String INSERT_MATERIAL_EXAME_SQL =
             "INSERT INTO material_exame (material, observacao) VALUES (?, ?);";
@@ -20,34 +20,20 @@ public class MaterialExameDAO extends ConexaoDB {
     private static final String TOTAL_SQL = "SELECT count(1) FROM material_exame;";
 
     public int count() {
-        int count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+        return super.count(TOTAL_SQL);
     }
 
     public MaterialExame insert(MaterialExame entidade) {
         try (PreparedStatement preparedStatement = prepararSQL(INSERT_MATERIAL_EXAME_SQL,
                 java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, entidade.getMaterial());
-            preparedStatement.setString(2, entidade.getObservacao());
+            injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
 
-            ResultSet result = preparedStatement.getGeneratedKeys();
-            if (result.next()) {
-                entidade.setId(result.getLong(1));
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                entidade.setId(rs.getLong(1));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -60,60 +46,75 @@ public class MaterialExameDAO extends ConexaoDB {
 
     public MaterialExame findById(long id) {
         MaterialExame entidade = null;
+
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_MATERIAL_EXAME_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                String material = rs.getString("material");
-                String observacao = rs.getString("observacao");
-                entidade = new MaterialExame(id, material, observacao);
+                entidade = new MaterialExame(id);
+                populateWithValues(entidade, rs);
             }
         } catch (SQLException e) {
             printSQLException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         return entidade;
     }
 
-    public List<MaterialExame> selectAllMaterialExame() {
+    public List<MaterialExame> selectAll() {
         List<MaterialExame> entidades = new ArrayList<>();
+
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_MATERIAL_EXAME_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 long id = rs.getLong("id");
-                String material = rs.getString("material");
-                String observacao = rs.getString("observacao");
-                entidades.add(new MaterialExame(id, material, observacao));
+                var entidade = new MaterialExame(id);
+                populateWithValues(entidade, rs);
+
+                entidades.add(entidade);
             }
         } catch (SQLException e) {
             printSQLException(e);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+
         return entidades;
     }
 
-    public boolean deleteMaterialExame(long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_MATERIAL_EXAME_SQL)) {
-            statement.setLong(1, id);
+    public boolean delete(long id) throws SQLException {
+        return super.delete(DELETE_MATERIAL_EXAME_SQL, id);
+    }
 
-            return statement.executeUpdate() > 0;
+    public void update(MaterialExame entidade) throws SQLException {
+        try (PreparedStatement preparedStatement = prepararSQL(UPDATE_MATERIAL_EXAME_SQL)) {
+            injectAllValuesAndId(entidade, preparedStatement);
+
+            preparedStatement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void updateMaterialExame(MaterialExame entidade) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(UPDATE_MATERIAL_EXAME_SQL)) {
-            statement.setString(1, entidade.getMaterial());
-            statement.setString(2, entidade.getObservacao());
-            statement.setLong(3, entidade.getId());
+    private static void injectAllValuesAndId(MaterialExame entidade, PreparedStatement preparedStatement) throws SQLException {
+        injectAllValues(entidade, preparedStatement);
+        preparedStatement.setLong(3, entidade.getId());
+    }
 
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    private static void injectAllValues(MaterialExame entidade, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, entidade.getMaterial());
+        preparedStatement.setString(2, entidade.getObservacao());
+    }
+
+    private static void populateWithValues(MaterialExame entidade, ResultSet rs) throws SQLException {
+        String material = rs.getString("material");
+        String observacao = rs.getString("observacao");
+
+        entidade.setMaterial(material);
+        entidade.setObservacao(observacao);
     }
 }

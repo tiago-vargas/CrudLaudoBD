@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 public class ConexaoDB {
     //TODO: criar variáveis de ambiente para os dados de acesso ao banco.
-//    private static final String dbName = "professor_frota";
     private static final String dbName = "tiagovargas20211045050365";
     private static final String dbURL = "jdbc:postgresql://200.17.32.221:5432/";
     private static final String username = "postgres";
@@ -15,7 +14,7 @@ public class ConexaoDB {
 
     public static Connection conexaoDB() throws ClassNotFoundException, SQLException {
         Class.forName("org.postgresql.Driver");
-        Connection conexaoDB = DriverManager.getConnection(dbURL.concat(dbName), username, password);
+        Connection conexaoDB = DriverManager.getConnection(dbURL + dbName, username, password);
 
         if (conexaoDB != null) {
             System.out.println("Conexão com o banco de dados gerada com sucesso! ");

@@ -1,6 +1,5 @@
 package br.com.frota.model;
 
-import br.com.frota.DAO.SiglaFormacaoDAO;
 import br.com.frota.servico.ServicoSiglaFormacao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -27,6 +26,7 @@ public class TestSiglaFormacao {
 
         // TearDown
         stmt.execute("DELETE FROM sigla_formacao WHERE id = " + siglaFormacao.getId() + ";");
+        con.close();
     }
 
     @Test
@@ -47,6 +47,7 @@ public class TestSiglaFormacao {
 
         // TearDown
         stmt.execute("DELETE FROM sigla_formacao WHERE id = " + inserted_id + ";");
+        con.close();
     }
 
     @Test
@@ -67,6 +68,7 @@ public class TestSiglaFormacao {
         // TearDown
         stmt.execute("DELETE FROM sigla_formacao WHERE id = " + list.get(0).getId() + ";");
         stmt.execute("DELETE FROM sigla_formacao WHERE id = " + list.get(1).getId() + ";");
+        con.close();
     }
 
     @Test
@@ -88,6 +90,7 @@ public class TestSiglaFormacao {
 
         // TearDown
         stmt.execute("DELETE FROM sigla_formacao WHERE id = " + id + ";");
+        con.close();
     }
 
     @Test
@@ -108,7 +111,7 @@ public class TestSiglaFormacao {
         Assertions.assertFalse(rs.next());
 
         // TearDown
-        // ...
+        con.close();
     }
 
     @Test
@@ -123,16 +126,11 @@ public class TestSiglaFormacao {
 //        System.out.println(id);
 
         // Act
-//        var obj = new SiglaFormacao("");
-//        obj.setId(id);
-//        obj.setSigla("New-sigla");
         var obj = new SiglaFormacao("Siglao");
         servico.salvar(obj);
 
         obj.setSigla("Siglin");
-//        servico.update(obj);
-        var dao = new SiglaFormacaoDAO();
-//        dao.updateSiglaFormacao(obj);
+        servico.update(obj);
 
         // Assert
         long id = obj.getId();
@@ -143,5 +141,6 @@ public class TestSiglaFormacao {
 
         // TearDown
         stmt.execute("DELETE FROM sigla_formacao WHERE id = " + id + ";");
+        con.close();
     }
 }

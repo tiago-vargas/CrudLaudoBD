@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnidadeMedidaDAO extends ConexaoDB {
+public class UnidadeMedidaDAO extends GenericDAO {
 
     private static final String INSERT_UNIDADE_MEDIDA_SQL = "INSERT INTO unidade_medida (descricao) VALUES (?);";
     private static final String SELECT_UNIDADE_MEDIDA_BY_ID_SQL = "SELECT * FROM unidade_medida WHERE id = ?";
@@ -17,21 +17,8 @@ public class UnidadeMedidaDAO extends ConexaoDB {
     private static final String UPDATE_UNIDADE_MEDIDA_SQL = "UPDATE unidade_medida SET descricao = ? WHERE id = ?;";
     private static final String TOTAL_SQL = "SELECT count(1) FROM unidade_medida;";
 
-    public Integer count() {
-        Integer count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+    public int count() {
+        return super.count(TOTAL_SQL);
     }
 
     public UnidadeMedida insert(UnidadeMedida entidade) {
@@ -73,7 +60,7 @@ public class UnidadeMedidaDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<UnidadeMedida> selectAllUnidadeMedida() {
+    public List<UnidadeMedida> selectAll() {
         List<UnidadeMedida> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_UNIDADE_MEDIDA_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -91,21 +78,16 @@ public class UnidadeMedidaDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteUnidadeMedida(long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_UNIDADE_MEDIDA_SQL)) {
-            statement.setLong(1, id);
-
-            return statement.executeUpdate() > 0;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public boolean delete(long id) throws SQLException {
+        return super.delete(DELETE_UNIDADE_MEDIDA_SQL, id);
     }
 
-    public void updateUnidadeMedida(UnidadeMedida entidade) throws SQLException {
+    public void update(UnidadeMedida entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_UNIDADE_MEDIDA_SQL)) {
             statement.setString(1, entidade.getDescricao());
             statement.setLong(2, entidade.getId());
 
+            statement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

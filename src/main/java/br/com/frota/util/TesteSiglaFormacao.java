@@ -1,6 +1,5 @@
 package br.com.frota.util;
 
-import br.com.frota.DAO.SiglaFormacaoDAO;
 import br.com.frota.model.SiglaFormacao;
 import br.com.frota.servico.ServicoSiglaFormacao;
 
@@ -8,13 +7,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class TesteSiglaFormacao {
-    static SiglaFormacaoDAO siglaFormacaoDAO = new SiglaFormacaoDAO();
-
-    static ServicoSiglaFormacao servicoSiglaFormacao = new ServicoSiglaFormacao();
+    static final ServicoSiglaFormacao servicoSiglaFormacao = new ServicoSiglaFormacao();
 
     public static void main(String[] args) throws SQLException {
         //count
-        System.out.println(siglaFormacaoDAO.count());
+        System.out.println(servicoSiglaFormacao.contar());
 
         //salvar
         SiglaFormacao siglaFormacao = new SiglaFormacao("SIGLA");
@@ -22,21 +19,21 @@ public class TesteSiglaFormacao {
 
         //buscar por ID
         long id = siglaFormacao.getId();
-        siglaFormacao = siglaFormacaoDAO.findById(id);
+        siglaFormacao = servicoSiglaFormacao.buscarPorId(id);
         System.out.println(siglaFormacao);
 
         //Update
         siglaFormacao.setSigla("NOVA.SIGLA");
-        siglaFormacaoDAO.updateSiglaFormacao(siglaFormacao);
-        siglaFormacao = siglaFormacaoDAO.findById(id);
+        servicoSiglaFormacao.update(siglaFormacao);
+        siglaFormacao = servicoSiglaFormacao.buscarPorId(id);
         System.out.println(siglaFormacao);
 
         //Select all
-        List<SiglaFormacao> siglasFormacoes = siglaFormacaoDAO.selectAllSiglaFormacao();
+        List<SiglaFormacao> siglasFormacoes = servicoSiglaFormacao.buscarTodos();
         siglasFormacoes.forEach(System.out::println);
 
         //Delete
-        siglaFormacaoDAO.deleteSiglaFormacao(id);
-        siglaFormacaoDAO.selectAllSiglaFormacao().forEach(System.out::println);
+        servicoSiglaFormacao.remover(id);
+        servicoSiglaFormacao.buscarTodos().forEach(System.out::println);
     }
 }

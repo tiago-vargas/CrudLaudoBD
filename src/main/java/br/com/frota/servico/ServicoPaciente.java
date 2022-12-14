@@ -4,6 +4,7 @@ import br.com.frota.DAO.PacienteDAO;
 import br.com.frota.model.Paciente;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class ServicoPaciente {
 
@@ -18,10 +19,18 @@ public class ServicoPaciente {
     }
 
     public void update(Paciente medico) throws SQLException {
-        pacienteDAO.updatePaciente(medico);
+        pacienteDAO.update(medico);
     }
 
     public void remover(long id) throws SQLException {
-        pacienteDAO.deletePaciente(id);
+        pacienteDAO.delete(id);
+    }
+
+    public int contar() {
+        return pacienteDAO.count();
+    }
+
+        public List<Paciente> buscarTodos() {
+        return pacienteDAO.selectAll();
     }
 }

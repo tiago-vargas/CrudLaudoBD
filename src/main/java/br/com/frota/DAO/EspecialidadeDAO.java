@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EspecialidadeDAO extends ConexaoDB {
+public class EspecialidadeDAO extends GenericDAO {
 
     private static final String INSERT_ESPECIALIDADE_SQL =
             "INSERT INTO especialidade (descricao, observacao) VALUES (?, ?);";
@@ -20,34 +20,20 @@ public class EspecialidadeDAO extends ConexaoDB {
     private static final String TOTAL_SQL = "SELECT count(1) FROM especialidade;";
 
     public int count() {
-        int count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+        return super.count(TOTAL_SQL);
     }
 
     public Especialidade insert(Especialidade entidade) {
         try (PreparedStatement preparedStatement = prepararSQL(INSERT_ESPECIALIDADE_SQL,
                 java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
-            preparedStatement.setString(1, entidade.getDescricao());
-            preparedStatement.setString(2, entidade.getObservacao());
+            injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
 
-            ResultSet result = preparedStatement.getGeneratedKeys();
-            if (result.next()) {
-                entidade.setId(result.getLong(1));
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                entidade.setId(rs.getLong("id"));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -65,9 +51,8 @@ public class EspecialidadeDAO extends ConexaoDB {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                String descricao = rs.getString("descricao");
-                String observacao = rs.getString("observacao");
-                entidade = new Especialidade(id, descricao, observacao);
+                entidade = new Especialidade(id);
+                populateWithValues(entidade, rs);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -77,16 +62,18 @@ public class EspecialidadeDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<Especialidade> selectAllEspecialidade() {
+    public List<Especialidade> selectAll() {
         List<Especialidade> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_ESPECIALIDADE_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 long id = rs.getLong("id");
-                String descricao = rs.getString("descricao");
-                String observacao = rs.getString("observacao");
-                entidades.add(new Especialidade(id, descricao, observacao));
+                var especialidade = new Especialidade(id);
+
+                populateWithValues(especialidade, rs);
+
+                entidades.add(especialidade);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -96,24 +83,36 @@ public class EspecialidadeDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteEspecialidade(long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_ESPECIALIDADE_SQL)) {
-            statement.setLong(1, id);
+    public boolean delete(long id) throws SQLException {
+        return super.delete(DELETE_ESPECIALIDADE_SQL, id);
+    }
 
-            return statement.executeUpdate() > 0;
+    public void update(Especialidade entidade) throws SQLException {
+        try (PreparedStatement preparedStatement = prepararSQL(UPDATE_ESPECIALIDADE_SQL)) {
+            injectAllValuesAndId(entidade, preparedStatement);
+            preparedStatement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void updateEspecialidade(Especialidade entidade) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(UPDATE_ESPECIALIDADE_SQL)) {
-            statement.setString(1, entidade.getDescricao());
-            statement.setString(2, entidade.getObservacao());
-            statement.setLong(3, entidade.getId());
+    private static void injectAllValuesAndId(Especialidade entidade, PreparedStatement preparedStatement)
+            throws SQLException {
+        injectAllValues(entidade, preparedStatement);
+        preparedStatement.setLong(3, entidade.getId());
+    }
 
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    private static void injectAllValues(Especialidade entidade, PreparedStatement preparedStatement)
+            throws SQLException {
+        preparedStatement.setString(1, entidade.getDescricao());
+        preparedStatement.setString(2, entidade.getObservacao());
+    }
+
+    private static void populateWithValues(Especialidade entidade, ResultSet rs) throws SQLException {
+        String descricao = rs.getString("descricao");
+        String observacao = rs.getString("observacao");
+
+        entidade.setDescricao(descricao);
+        entidade.setObservacao(observacao);
     }
 }

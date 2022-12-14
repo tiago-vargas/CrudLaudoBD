@@ -5,24 +5,20 @@ import java.sql.Date;
 public class ConsultaMedica extends GenericModel {
 
     private Date dtConsulta;
-    private int medicoId;
-    private int pacienteId;
+    private long medicoId;
+    private long pacienteId;
     private String nmAtendimento;
 
-    public ConsultaMedica(Long id, Date dtConsulta, int medicoId, int pacienteId, String nmAtendimento) {
-        this.setId(id);
+    public ConsultaMedica(Date dtConsulta, long medicoId, long pacienteId, String nmAtendimento) {
+        super();
         this.medicoId = medicoId;
         this.dtConsulta = dtConsulta;
         this.pacienteId = pacienteId;
         this.nmAtendimento = nmAtendimento;
     }
 
-    public int getMedicoId() {
-        return medicoId;
-    }
-
-    public void setMedicoId(int medicoId) {
-        this.medicoId = medicoId;
+    public ConsultaMedica(long id) {
+        this.setId(id);
     }
 
     public Date getDtConsulta() {
@@ -33,8 +29,37 @@ public class ConsultaMedica extends GenericModel {
         this.dtConsulta = dtConsulta;
     }
 
+    public long getMedicoId() {
+        return medicoId;
+    }
+
+    public void setMedicoId(long medicoId) {
+        this.medicoId = medicoId;
+    }
+
+    public long getPacienteId() {
+        return pacienteId;
+    }
+
+    public void setPacienteId(long pacienteId) {
+        this.pacienteId = pacienteId;
+    }
+
+    public String getNmAtendimento() {
+        return nmAtendimento;
+    }
+
+    public void setNmAtendimento(String nmAtendimento) {
+        this.nmAtendimento = nmAtendimento;
+    }
+
+
     @Override
     public String toString() {
-        return "Marca [dt_consulta=" + dtConsulta + ", medico_id=" + medicoId + ", paciente_id" + pacienteId + ", nm_atendimento=" + nmAtendimento + "]";
+        return "ConsultaMedica [dt_consulta=" + dtConsulta
+                + ", medico_id=" + medicoId
+                + ", paciente_id=" + pacienteId
+                + ", nm_atendimento=" + nmAtendimento
+                + "]";
     }
 }

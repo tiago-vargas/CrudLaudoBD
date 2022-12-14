@@ -19,15 +19,15 @@ public class ServicoSiglaFormacao {
     }
 
     public List<SiglaFormacao> buscarTodos() {
-        return siglaFormacaoDAO.selectAllSiglaFormacao();
+        return siglaFormacaoDAO.selectAll();
     }
 
     public void update(SiglaFormacao siglaFormacao) throws SQLException {
-        siglaFormacaoDAO.updateSiglaFormacao(siglaFormacao);
+        siglaFormacaoDAO.update(siglaFormacao);
     }
 
     public void remover(Long id) throws SQLException {
-        siglaFormacaoDAO.deleteSiglaFormacao(id);
+        siglaFormacaoDAO.delete(id);
     }
 
     public int contar() {

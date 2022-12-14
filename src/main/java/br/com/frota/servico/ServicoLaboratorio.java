@@ -4,6 +4,7 @@ import br.com.frota.DAO.LaboratorioDAO;
 import br.com.frota.model.Laboratorio;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class ServicoLaboratorio {
 
@@ -18,10 +19,18 @@ public class ServicoLaboratorio {
     }
 
     public void update(Laboratorio laboratorio) throws SQLException {
-        laboratorioDAO.updateLaboratorio(laboratorio);
+        laboratorioDAO.update(laboratorio);
     }
 
     public void remover(long id) throws SQLException {
-        laboratorioDAO.deleteLaboratorio(id);
+        laboratorioDAO.delete(id);
+    }
+
+    public int contar() {
+        return laboratorioDAO.count();
+    }
+
+    public List<Laboratorio> buscarTodos() {
+        return laboratorioDAO.selectAll();
     }
 }

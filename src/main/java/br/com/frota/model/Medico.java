@@ -5,16 +5,14 @@ public class Medico extends GenericModel {
     private String crm;
     private String nome;
 
-    public Medico(long id, String crm, String nome) {
-        this.setId(id);
-        this.crm = crm;
-        this.nome = nome;
-    }
-
     public Medico(String crm, String nome) {
         super();
         this.crm = crm;
         this.nome = nome;
+    }
+
+    public Medico(long id) {
+        this.setId(id);
     }
 
     public String getCrm() {

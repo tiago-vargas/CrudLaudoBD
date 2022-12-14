@@ -7,16 +7,14 @@ public class Paciente extends GenericModel {
     private String nome;
     private Date dtNascimento;
 
-    public Paciente(long id, String nome, Date dtNascimento) {
-        this.setId(id);
-        this.nome = nome;
-        this.dtNascimento = dtNascimento;
-    }
-
     public Paciente(String nome, Date dtNascimento) {
         super();
         this.nome = nome;
         this.dtNascimento = dtNascimento;
+    }
+
+    public Paciente(long id) {
+        this.setId(id);
     }
 
     public String getNome() {

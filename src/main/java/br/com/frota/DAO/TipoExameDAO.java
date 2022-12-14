@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TipoExameDAO extends ConexaoDB {
+public class TipoExameDAO extends GenericDAO {
 
     private static final String INSERT_TIPO_EXAME_SQL = "INSERT INTO tipo_exame (descricao, observacao) VALUES (?, ?);";
     private static final String SELECT_TIPO_EXAME_BY_ID_SQL = "SELECT * FROM tipo_exame WHERE id = ?";
@@ -17,21 +17,8 @@ public class TipoExameDAO extends ConexaoDB {
     private static final String UPDATE_TIPO_EXAME_SQL = "UPDATE tipo_exame SET descricao = ?, observacao = ? WHERE id = ?;";
     private static final String TOTAL_SQL = "SELECT count(1) FROM tipo_exame;";
 
-    public Integer count() {
-        Integer count = 0;
-        try (PreparedStatement preparedStatement = prepararSQL(TOTAL_SQL)) {
-            ResultSet rs = preparedStatement.executeQuery();
-
-            while (rs.next()) {
-                count = rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return count;
+    public int count() {
+        return super.count(TOTAL_SQL);
     }
 
     public TipoExame insert(TipoExame entidade) {
@@ -75,7 +62,7 @@ public class TipoExameDAO extends ConexaoDB {
         return entidade;
     }
 
-    public List<TipoExame> selectAllTipoExame() {
+    public List<TipoExame> selectAll() {
         List<TipoExame> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_TIPO_EXAME_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -94,22 +81,17 @@ public class TipoExameDAO extends ConexaoDB {
         return entidades;
     }
 
-    public boolean deleteTipoExame(long id) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_TIPO_EXAME_SQL)) {
-            statement.setLong(1, id);
-
-            return statement.executeUpdate() > 0;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public boolean delete(long id) throws SQLException {
+        return super.delete(DELETE_TIPO_EXAME_SQL, id);
     }
 
-    public void updateTipoExame(TipoExame entidade) throws SQLException {
+    public void update(TipoExame entidade) throws SQLException {
         try (PreparedStatement statement = prepararSQL(UPDATE_TIPO_EXAME_SQL)) {
             statement.setString(1, entidade.getDescricao());
             statement.setString(2, entidade.getObservacao());
             statement.setLong(3, entidade.getId());
 
+            statement.executeUpdate();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
