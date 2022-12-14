@@ -4,12 +4,7 @@ public class SiglaFormacao extends GenericModel {
 
     private String sigla;
 
-    public SiglaFormacao(Long id, String sigla) {
-        this.setId(id);
-        this.sigla = sigla;
-    }
-
-    public SiglaFormacao(Long id) {
+    public SiglaFormacao(long id) {
         this.setId(id);
     }
 
