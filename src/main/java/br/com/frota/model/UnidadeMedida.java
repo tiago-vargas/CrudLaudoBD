@@ -4,11 +4,6 @@ public class UnidadeMedida extends GenericModel {
 
     private String descricao;
 
-    public UnidadeMedida(long id, String descricao) {
-        this.setId(id);
-        this.descricao = descricao;
-    }
-
     public UnidadeMedida(long id) {
         this.setId(id);
     }
