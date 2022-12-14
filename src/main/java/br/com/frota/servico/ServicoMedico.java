@@ -1,6 +1,7 @@
 package br.com.frota.servico;
 
 import br.com.frota.DAO.MedicoDAO;
+import br.com.frota.model.Especialidade;
 import br.com.frota.model.Medico;
 
 import java.sql.SQLException;
@@ -18,6 +19,10 @@ public class ServicoMedico {
         return medicoDAO.findById(id);
     }
 
+    public List<Especialidade> buscarEspecialidade(long medicoId) {
+        return  medicoDAO.selectEspecialidadeOfMedico(medicoId);
+    }
+
     public void update(Medico medico) throws SQLException {
         medicoDAO.update(medico);
     }
@@ -32,5 +37,13 @@ public class ServicoMedico {
 
     public List<Medico> buscarTodos() {
         return medicoDAO.selectAll();
+    }
+
+    public void adicionarEspecialidade(long medicoId, long especialidadeId) {
+        medicoDAO.insertEspecialidade(medicoId, especialidadeId);
+    }
+
+    public void removerEspecialidade(long medicoId, long especialidadeId) throws SQLException {
+        medicoDAO.removeEspecialidade(medicoId, especialidadeId);
     }
 }

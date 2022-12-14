@@ -1,6 +1,8 @@
 package br.com.frota.util;
 
+import br.com.frota.model.Especialidade;
 import br.com.frota.model.Medico;
+import br.com.frota.servico.ServicoEspecialidade;
 import br.com.frota.servico.ServicoMedico;
 
 import java.sql.SQLException;
@@ -33,6 +35,14 @@ public class TesteMedico {
         //Select all
         List<Medico> medicos = servicoMedico.buscarTodos();
         medicos.forEach(System.out::println);
+
+        // Especialidades
+        var especialidade = new Especialidade("Esp.", "Obs.");
+        var servicoEspecialidade = new ServicoEspecialidade();
+        servicoEspecialidade.salvar(especialidade);
+        servicoMedico.adicionarEspecialidade(id, especialidade.getId());
+        List<Especialidade> especialidades = servicoMedico.buscarEspecialidade(id);
+        especialidades.forEach(System.out::println);
 
         //Delete
         servicoMedico.remover(id);

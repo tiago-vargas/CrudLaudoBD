@@ -1,6 +1,8 @@
 package br.com.frota.DAO;
 
+import br.com.frota.model.Especialidade;
 import br.com.frota.model.Medico;
+import br.com.frota.model.MedicoHasEspecialidade;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,11 +13,15 @@ import java.util.List;
 public class MedicoDAO extends GenericDAO {
 
     private static final String INSERT_MEDICO_SQL = "INSERT INTO medico (crm, nome) VALUES (?, ?);";
-    private static final String SELECT_MEDICO_BY_ID = "SELECT id, crm, nome FROM medico WHERE id = ?";
-    private static final String SELECT_ALL_MEDICO = "SELECT * FROM medico;";
+    private static final String SELECT_MEDICO_BY_ID_SQL = "SELECT id, crm, nome FROM medico WHERE id = ?";
+    private static final String SELECT_ALL_MEDICO_SQL = "SELECT * FROM medico;";
     private static final String DELETE_MEDICO_SQL = "DELETE FROM medico WHERE id = ?;";
     private static final String UPDATE_MEDICO_SQL = "UPDATE medico SET crm = ?, nome = ? WHERE id = ?;";
     private static final String COUNT_SQL = "SELECT count(1) FROM medico;";
+    private static final String INSERT_ESPECIALIDADE_SQL =
+            "INSERT INTO medico_has_especialidade (medico_id, especialidade_id) VALUES (?, ?);";
+    private static final String SELECT_ESPECIALIDADE_OF_MEDICO_SQL =
+            "SELECT especialidade_id FROM medico_has_especialidade WHERE medico_id = ?";
 
     public int count() {
         return super.count(COUNT_SQL);
@@ -42,10 +48,36 @@ public class MedicoDAO extends GenericDAO {
         return entidade;
     }
 
+    public MedicoHasEspecialidade insertEspecialidade(long medicoId, long especialidadeId) {
+        MedicoHasEspecialidade medicoHasEspecialidade = null;
+
+        try (PreparedStatement preparedStatement = prepararSQL(INSERT_ESPECIALIDADE_SQL,
+                java.sql.Statement.RETURN_GENERATED_KEYS)) {
+
+            preparedStatement.setLong(1, medicoId);
+            preparedStatement.setLong(2, especialidadeId);
+
+            preparedStatement.executeUpdate();
+
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                medicoId = rs.getLong("medico_id");
+                especialidadeId = rs.getLong("especialidade_id");
+                medicoHasEspecialidade = new MedicoHasEspecialidade(medicoId, especialidadeId);
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return medicoHasEspecialidade;
+    }
+
     public Medico findById(long id) {
         Medico entidade = null;
 
-        try (PreparedStatement preparedStatement = prepararSQL(SELECT_MEDICO_BY_ID)) {
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_MEDICO_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -65,7 +97,7 @@ public class MedicoDAO extends GenericDAO {
     public List<Medico> selectAll() {
         List<Medico> entidades = new ArrayList<>();
 
-        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_MEDICO)) {
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_MEDICO_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -84,7 +116,31 @@ public class MedicoDAO extends GenericDAO {
         return entidades;
     }
 
+    public List<Especialidade> selectEspecialidadeOfMedico(long medicoId) {
+        List<Especialidade> especialidades = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_ESPECIALIDADE_OF_MEDICO_SQL)) {
+            preparedStatement.setLong(1, medicoId);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                long especialidadeId = rs.getLong("especialidade_id");
+                var especialidadeDao = new EspecialidadeDAO();
+                var especialidade = especialidadeDao.findById(especialidadeId);
+
+                especialidades.add(especialidade);
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return especialidades;
+    }
+
     public boolean delete(long id) throws SQLException {
+        new MedicoHasEspecialidadeDAO().deleteRowsOfMedico(id);
         return super.delete(DELETE_MEDICO_SQL, id);
     }
 
@@ -109,11 +165,15 @@ public class MedicoDAO extends GenericDAO {
         preparedStatement.setString(2, entidade.getNome());
     }
 
-    private static void populateWithValues(Medico entidade, ResultSet rs) throws SQLException {
+    static void populateWithValues(Medico entidade, ResultSet rs) throws SQLException {
         String crm = rs.getString("crm");
         String nome = rs.getString("nome");
 
         entidade.setCrm(crm);
         entidade.setNome(nome);
+    }
+
+    public void removeEspecialidade(long medicoId, long especialidadeId) throws SQLException {
+        new MedicoHasEspecialidadeDAO().delete(medicoId, especialidadeId);
     }
 }

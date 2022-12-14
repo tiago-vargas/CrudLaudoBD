@@ -2,6 +2,7 @@ package br.com.frota.servico;
 
 import br.com.frota.DAO.EspecialidadeDAO;
 import br.com.frota.model.Especialidade;
+import br.com.frota.model.Medico;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -32,5 +33,9 @@ public class ServicoEspecialidade {
 
     public List<Especialidade> buscarTodos() {
         return especialidadeDAO.selectAll();
+    }
+
+    public List<Medico> buscarMedicosComEspecialidade(long medicoId) {
+        return  especialidadeDAO.selectMedicosWithEspecialidade(medicoId);
     }
 }

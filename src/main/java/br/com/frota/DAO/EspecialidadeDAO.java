@@ -1,6 +1,8 @@
 package br.com.frota.DAO;
 
 import br.com.frota.model.Especialidade;
+import br.com.frota.model.Medico;
+import br.com.frota.model.MedicoHasEspecialidade;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +16,8 @@ public class EspecialidadeDAO extends GenericDAO {
             "INSERT INTO especialidade (descricao, observacao) VALUES (?, ?);";
     private static final String SELECT_ESPECIALIDADE_BY_ID_SQL = "SELECT * FROM especialidade WHERE id = ?";
     private static final String SELECT_ALL_ESPECIALIDADE_SQL = "SELECT * FROM especialidade;";
+    private static final String SELECT_MEDICO_WITH_ESPECIALIDADE_SQL =
+            "SELECT medico_id FROM medico_has_especialidade WHERE especialidade_id = ?";
     private static final String DELETE_ESPECIALIDADE_SQL = "DELETE FROM especialidade WHERE id = ?;";
     private static final String UPDATE_ESPECIALIDADE_SQL =
             "UPDATE especialidade SET descricao = ?, observacao = ? WHERE id = ?;";
@@ -84,6 +88,7 @@ public class EspecialidadeDAO extends GenericDAO {
     }
 
     public boolean delete(long id) throws SQLException {
+        new MedicoHasEspecialidadeDAO().deleteRowsOfEspecialidade(id);
         return super.delete(DELETE_ESPECIALIDADE_SQL, id);
     }
 
@@ -108,11 +113,34 @@ public class EspecialidadeDAO extends GenericDAO {
         preparedStatement.setString(2, entidade.getObservacao());
     }
 
-    private static void populateWithValues(Especialidade entidade, ResultSet rs) throws SQLException {
+    static void populateWithValues(Especialidade entidade, ResultSet rs) throws SQLException {
         String descricao = rs.getString("descricao");
         String observacao = rs.getString("observacao");
 
         entidade.setDescricao(descricao);
         entidade.setObservacao(observacao);
+    }
+
+    public List<Medico> selectMedicosWithEspecialidade(long especialidadeId) {
+        List<Medico> medicos = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = prepararSQL(SELECT_MEDICO_WITH_ESPECIALIDADE_SQL)) {
+            preparedStatement.setLong(1, especialidadeId);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                long medicoId = rs.getLong("especialidade_id");
+                var medicoDAO = new MedicoDAO();
+                var medico = medicoDAO.findById(medicoId);
+
+                medicos.add(medico);
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return medicos;
     }
 }
