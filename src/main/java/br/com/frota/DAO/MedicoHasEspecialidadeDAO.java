@@ -28,11 +28,13 @@ public class MedicoHasEspecialidadeDAO extends GenericDAO {
     }
 
     public boolean delete(long medicoId, long especialidadeId) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(DELETE_MEDICO_HAS_ESPECIALIDADE_SQL)) {
-            statement.setLong(1, medicoId);
-            statement.setLong(2, especialidadeId);
+        try (PreparedStatement preparedStatement = prepararSQL(DELETE_MEDICO_HAS_ESPECIALIDADE_SQL)) {
+            preparedStatement.setLong(1, medicoId);
+            preparedStatement.setLong(2, especialidadeId);
 
-            return statement.executeUpdate() > 0;
+            boolean hasDeleted = preparedStatement.executeUpdate() > 0;
+            preparedStatement.getConnection().close();
+            return hasDeleted;
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -49,6 +51,7 @@ public class MedicoHasEspecialidadeDAO extends GenericDAO {
             injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
+            preparedStatement.getConnection().close();
 
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if (rs.next()) {

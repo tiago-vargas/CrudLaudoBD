@@ -28,6 +28,7 @@ public class SiglaFormacaoDAO extends GenericDAO {
             injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
+            preparedStatement.getConnection().close();
 
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if (rs.next()) {
@@ -48,6 +49,7 @@ public class SiglaFormacaoDAO extends GenericDAO {
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_SIGLA_FORMACAO_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.getConnection().close();
 
             while (rs.next()) {
                 entidade = new SiglaFormacao(id);
@@ -67,6 +69,7 @@ public class SiglaFormacaoDAO extends GenericDAO {
 
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_SIGLA_FORMACAO_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.getConnection().close();
 
             while (rs.next()) {
                 long id = rs.getLong("id");
@@ -93,6 +96,7 @@ public class SiglaFormacaoDAO extends GenericDAO {
             injectAllValuesWithId(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
+            preparedStatement.getConnection().close();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

@@ -34,6 +34,7 @@ public class MedicoDAO extends GenericDAO {
             injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
+            preparedStatement.getConnection().close();
 
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if (rs.next()) {
@@ -58,6 +59,7 @@ public class MedicoDAO extends GenericDAO {
             preparedStatement.setLong(2, especialidadeId);
 
             preparedStatement.executeUpdate();
+            preparedStatement.getConnection().close();
 
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if (rs.next()) {
@@ -80,6 +82,7 @@ public class MedicoDAO extends GenericDAO {
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_MEDICO_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.getConnection().close();
 
             while (rs.next()) {
                 entidade = new Medico(id);
@@ -99,6 +102,7 @@ public class MedicoDAO extends GenericDAO {
 
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_MEDICO_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.getConnection().close();
 
             while (rs.next()) {
                 long id = rs.getLong("id");
@@ -122,6 +126,7 @@ public class MedicoDAO extends GenericDAO {
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ESPECIALIDADE_OF_MEDICO_SQL)) {
             preparedStatement.setLong(1, medicoId);
             ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.getConnection().close();
 
             while (rs.next()) {
                 long especialidadeId = rs.getLong("especialidade_id");
@@ -145,10 +150,11 @@ public class MedicoDAO extends GenericDAO {
     }
 
     public void update(Medico entidade) throws SQLException {
-        try (PreparedStatement statement = prepararSQL(UPDATE_MEDICO_SQL)) {
-            injectAllValuesAndId(entidade, statement);
+        try (PreparedStatement preparedStatement = prepararSQL(UPDATE_MEDICO_SQL)) {
+            injectAllValuesAndId(entidade, preparedStatement);
 
-            statement.executeUpdate();
+            preparedStatement.executeUpdate();
+            preparedStatement.getConnection().close();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

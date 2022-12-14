@@ -2,7 +2,6 @@ package br.com.frota.DAO;
 
 import br.com.frota.model.Especialidade;
 import br.com.frota.model.Medico;
-import br.com.frota.model.MedicoHasEspecialidade;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,6 +33,7 @@ public class EspecialidadeDAO extends GenericDAO {
             injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
+            preparedStatement.getConnection().close();
 
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if (rs.next()) {
@@ -53,6 +53,7 @@ public class EspecialidadeDAO extends GenericDAO {
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ESPECIALIDADE_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.getConnection().close();
 
             while (rs.next()) {
                 entidade = new Especialidade(id);
@@ -70,6 +71,7 @@ public class EspecialidadeDAO extends GenericDAO {
         List<Especialidade> entidades = new ArrayList<>();
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_ESPECIALIDADE_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.getConnection().close();
 
             while (rs.next()) {
                 long id = rs.getLong("id");
@@ -96,6 +98,7 @@ public class EspecialidadeDAO extends GenericDAO {
         try (PreparedStatement preparedStatement = prepararSQL(UPDATE_ESPECIALIDADE_SQL)) {
             injectAllValuesAndId(entidade, preparedStatement);
             preparedStatement.executeUpdate();
+            preparedStatement.getConnection().close();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -127,6 +130,7 @@ public class EspecialidadeDAO extends GenericDAO {
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_MEDICO_WITH_ESPECIALIDADE_SQL)) {
             preparedStatement.setLong(1, especialidadeId);
             ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.getConnection().close();
 
             while (rs.next()) {
                 long medicoId = rs.getLong("especialidade_id");

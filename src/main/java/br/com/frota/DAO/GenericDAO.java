@@ -9,6 +9,7 @@ public class GenericDAO extends ConexaoDB {
         int count = 0;
         try (PreparedStatement preparedStatement = prepararSQL(sql)) {
             ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.getConnection().close();
 
             while (rs.next()) {
                 count = rs.getInt("count");
@@ -26,7 +27,9 @@ public class GenericDAO extends ConexaoDB {
         try (PreparedStatement statement = prepararSQL(sql)) {
             statement.setLong(1, id);
 
-            return statement.executeUpdate() > 0;
+            boolean hasDeleted = statement.executeUpdate() > 0;
+            statement.getConnection().close();
+            return hasDeleted;
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

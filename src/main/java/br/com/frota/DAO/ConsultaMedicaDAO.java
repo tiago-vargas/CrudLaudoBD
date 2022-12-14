@@ -34,6 +34,7 @@ public class ConsultaMedicaDAO extends GenericDAO {
             injectAllValues(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
+            preparedStatement.getConnection().close();
 
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if (rs.next()) {
@@ -54,6 +55,7 @@ public class ConsultaMedicaDAO extends GenericDAO {
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_CONSULTA_MEDICA_BY_ID_SQL)) {
             preparedStatement.setLong(1, id);
             ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.getConnection().close();
 
             while (rs.next()) {
                 entidade = new ConsultaMedica(id);
@@ -73,6 +75,7 @@ public class ConsultaMedicaDAO extends GenericDAO {
 
         try (PreparedStatement preparedStatement = prepararSQL(SELECT_ALL_CONSULTA_MEDICA_SQL)) {
             ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.getConnection().close();
 
             while (rs.next()) {
                 long id = rs.getLong("id");
@@ -99,6 +102,7 @@ public class ConsultaMedicaDAO extends GenericDAO {
             injectAllValuesAndId(entidade, preparedStatement);
 
             preparedStatement.executeUpdate();
+            preparedStatement.getConnection().close();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
